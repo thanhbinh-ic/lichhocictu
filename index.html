@@ -115,14 +115,13 @@
         </div>
 
         <div id="gestureHeaderZone" class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 shadow-sm relative transition-colors duration-200">
-            <!-- Week Selector Header (Sửa lỗi mũi tên sỗ ra trên iPhone 8 / iOS cũ) -->
+            <!-- Week Selector Header -->
             <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-700/60 text-xs">
                 <button id="prevWeekBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <div class="flex items-center space-x-1.5">
                     <i class="fa-regular fa-clock text-brand-500 dark:text-emerald-400"></i>
-                    <!-- Bọc select trong wrapper relative với icon mũi tên rõ ràng cho iOS cũ -->
                     <div class="relative flex items-center">
                         <select id="weekSelect" class="bg-transparent font-bold text-gray-800 dark:text-gray-100 focus:outline-none cursor-pointer text-xs sm:text-sm custom-select-dropdown pr-4">
                             <!-- Filled dynamically -->
@@ -1191,6 +1190,14 @@
             const donateModal = document.getElementById('donateModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
 
+            // Tự động chọn (select) toàn bộ nội dung trong ô nhập HTML khi người dùng focus hoặc click vào
+            htmlInputArea.onfocus = function() {
+                this.select();
+            };
+            htmlInputArea.onclick = function() {
+                this.select();
+            };
+
             // Xử lý chuyển đổi qua lại giữa 3 chế độ Theme: Auto -> Light -> Dark -> Auto
             document.getElementById('themeToggleBtn').onclick = () => {
                 if (currentThemeMode === 'auto') {
@@ -1233,10 +1240,14 @@
                 goToToday();
             };
 
-            // Open Import Modal
+            // Open Import Modal & Auto Select Text Box
             document.getElementById('openImportBtn').onclick = () => {
                 htmlInputArea.value = appState.rawHtml || '';
                 importModal.classList.remove('hidden');
+                setTimeout(() => {
+                    htmlInputArea.focus();
+                    htmlInputArea.select();
+                }, 30);
             };
 
             document.getElementById('closeImportModal').onclick = () => importModal.classList.add('hidden');
