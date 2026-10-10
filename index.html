@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Lịch Học Thông Minh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#e6f7f5',
+                            100: '#b3e8e2',
+                            500: '#00897b',
+                            600: '#00796b',
+                            700: '#004d40'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f3f4f6;
+            -webkit-font-smoothing: antialiased;
+            overscroll-behavior-y: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+        /* Mobile Safe Area Padding for iOS Safari */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+        .pt-safe {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+        /* Month calendar accordion smooth transition */
+        #monthCalendarContainer {
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease-in-out;
+            will-change: max-height, opacity;
+        }
+        .touch-pull-handle {
+            cursor: grab;
+        }
+        .touch-pull-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-full flex flex-col justify-between select-none">
+
+    <header class="bg-[#00897b] text-white sticky top-0 z-40 shadow-md pt-safe">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <i class="fa-solid fa-calendar-days text-lg text-emerald-200"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold tracking-tight leading-none">Lịch cá nhân</h1>
+                    <span id="savedStateBadge" class="text-[10px] text-emerald-200 font-normal">Đã lưu tự động</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1 sm:space-x-2">
+                <button id="openImportBtn" title="Dán mã HTML lịch học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i class="fa-solid fa-paste text-lg"></i>
+                </button>
+                <button id="openSettingsBtn" title="Cấu hình tiết học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i class="fa-solid fa-sliders text-lg"></i>
+                </button>
+                <button id="exportIcalBtn" title="Xuất lịch ra Google/Apple Calendar (.ics)" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i class="fa-solid fa-file-export text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="gestureHeaderZone" class="bg-white text-gray-700 border-b border-gray-200 shadow-sm relative">
+            <!-- Week Selector Header -->
+            <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between border-b border-gray-100 text-xs">
+                <button id="prevWeekBtn" class="p-1.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-gray-600 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-regular fa-clock text-brand-500"></i>
+                    <select id="weekSelect" class="bg-transparent font-bold text-gray-800 focus:outline-none cursor-pointer text-xs sm:text-sm">
+                        <!-- Filled dynamically -->
+                    </select>
+                </div>
+                <button id="nextWeekBtn" class="p-1.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-gray-600 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- 7-Day Ribbon View -->
+            <div class="max-w-md mx-auto px-2 pt-2">
+                <div id="daysStrip" class="grid grid-cols-7 text-center gap-1">
+                    <!-- Days dynamically rendered here -->
+                </div>
+            </div>
+
+            <!-- Month Calendar Expandable Dropdown Container -->
+            <div id="monthCalendarContainer" class="max-w-md mx-auto px-3 overflow-hidden max-h-0 opacity-0 bg-gray-50 border-t border-gray-100">
+                <div class="py-3">
+                    <!-- Month Header Controls -->
+                    <div class="flex items-center justify-between mb-2.5 px-1">
+                        <button id="prevMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <span id="monthYearLabel" class="text-xs font-bold text-gray-800 uppercase tracking-wide">
+                            Tháng --/----
+                        </span>
+                        <button id="nextMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Month Grid Headers -->
+                    <div class="grid grid-cols-7 text-center text-[10px] font-bold text-gray-400 mb-1">
+                        <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                    </div>
+
+                    <!-- Month Days Matrix -->
+                    <div id="monthDaysGrid" class="grid grid-cols-7 gap-1 text-center">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+                    <!-- Legend indicators -->
+                    <div class="flex items-center justify-center space-x-4 mt-3 text-[10px] text-gray-500 border-t border-gray-200/60 pt-2">
+                        <div class="flex items-center space-x-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span>
+                            <span>Hôm nay</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                            <span>Có lịch học</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swipe/Pull Handle Button -->
+            <div id="toggleMonthBtn" class="touch-pull-handle py-1.5 flex items-center justify-center text-[11px] text-gray-500 font-medium hover:text-brand-600 transition bg-gray-50/80 active:bg-gray-100 border-t border-gray-100">
+                <span id="monthToggleText">Vuốt xuống để mở lịch tháng</span>
+                <i id="monthToggleIcon" class="fa-solid fa-chevron-down ml-1.5 text-[10px]"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main id="mainSwipeArea" class="flex-1 max-w-md w-full mx-auto p-3 space-y-3.5 pb-20">
+
+        <!-- Active Filter Bar -->
+        <div class="flex items-center justify-between text-xs text-gray-500 px-1 pt-0.5">
+            <span id="activeFilterBadge" class="font-medium bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-[11px]">
+                Hiển thị: Tất cả các ngày
+            </span>
+            <button id="resetFilterBtn" class="text-brand-600 hover:underline font-semibold text-[11px] hidden">
+                Xem tất cả
+            </button>
+        </div>
+
+        <!-- Timetable Items List -->
+        <div id="scheduleContainer" class="space-y-3.5">
+            <!-- Schedule cards injected here -->
+        </div>
+
+        <!-- Empty State View -->
+        <div id="emptyState" class="hidden text-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100 my-4">
+            <div class="w-16 h-16 bg-emerald-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fa-regular fa-calendar-xmark text-2xl"></i>
+            </div>
+            <h3 class="text-base font-bold text-gray-700">Không có lịch học</h3>
+            <p class="text-xs text-gray-400 mt-1 max-w-xs mx-auto">
+                Không có môn học nào trong ngày hoặc tuần bạn chọn.
+            </p>
+            <button onclick="document.getElementById('openImportBtn').click()" class="mt-4 px-4 py-2.5 bg-brand-500 text-white text-xs font-bold rounded-xl shadow-md hover:bg-brand-600 active:scale-95 transition">
+                <i class="fa-solid fa-plus mr-1.5"></i> Nhập HTML Lịch Học
+            </button>
+        </div>
+    </main>
+
+    <!-- HTML Input Modal -->
+    <div id="importModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-code text-brand-500 text-lg"></i>
+                    <h2 class="text-base font-bold text-gray-800">Dán HTML Bảng Lịch Học</h2>
+                </div>
+                <button id="closeImportModal" class="text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px]">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 my-2">
+                Copy toàn bộ thẻ <code class="bg-gray-100 text-red-500 px-1 py-0.5 rounded">&lt;table&gt;...&lt;/table&gt;</code> từ cổng thông tin đào tạo và dán vào bên dưới:
+            </p>
+            <textarea id="htmlInputArea" rows="9" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 text-gray-700"></textarea>
+
+            <div class="mt-4 flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
+                <button id="loadSampleBtn" class="px-3 py-2 text-xs text-brand-600 font-semibold hover:bg-brand-50 rounded-lg transition">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Dùng lịch mẫu
+                </button>
+                <div class="flex gap-2">
+                    <button id="cancelImportBtn" class="px-3 py-2 text-xs font-semibold text-gray-500 hover:bg-gray-100 rounded-lg">
+                        Hủy
+                    </button>
+                    <button id="processHtmlBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-circle-check mr-1"></i> Trích xuất & Hiển thị
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Time Mapping Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl flex flex-col max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-clock text-brand-500 text-lg"></i>
+                    <h2 class="text-base font-bold text-gray-800">Cấu hình Giờ Tiết Học</h2>
+                </div>
+                <button id="closeSettingsModal" class="text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px]">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 my-2">Điều chỉnh khung giờ tương ứng với từng tiết học trong trường của bạn:</p>
+
+            <div id="periodSettingsList" class="space-y-2 my-2">
+                <!-- Period inputs generated here -->
+            </div>
+
+            <div class="mt-4 flex justify-between items-center pt-3 border-t border-gray-100">
+                <button id="resetPeriodsBtn" class="text-xs text-red-500 font-semibold hover:underline">
+                    Mặc định
+                </button>
+                <button id="saveSettingsBtn" class="px-5 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
+                    Lưu cấu hình
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preset sample HTML table
+        const SAMPLE_HTML_TABLE = `<table class="table table-bordered tkb-scroll table-condensed" cellspacing="1" cellpadding="1" rules="all" border="1" id="">
+    <thead>
+        <tr class="table-header">
+            <th class="c-stt">STT</th>
+            <th class="c-lop">Tên lớp học phần</th>
+            <th class="c-tc">Số TC</th>
+            <th class="c-thu">Thứ</th>
+            <th class="c-tiet">Tiết học</th>
+            <th class="c-diadiem">Địa điểm</th>
+            <th class="c-gv">Tên giảng viên</th>
+            <th class="c-ngay">Ngày học</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="background-color:#e8e8e8; font-weight:bold;">
+            <td colspan="8">TUẦN: 10 (14/09/2026 đến 20/09/2026)</td>
+        </tr>
+        <tr>
+            <td class="c-stt">1</td>
+            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">4</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.303</td>
+            <td class="c-gv">Nguyễn Thị Nhung</td>
+            <td class="c-ngay">18/09/2026</td>
+        </tr>
+        <tr style="background-color:#e8e8e8; font-weight:bold;">
+            <td colspan="8">TUẦN: 11 (21/09/2026 đến 27/09/2026)</td>
+        </tr>
+        <tr>
+            <td class="c-stt">2</td>
+            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">4</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.303</td>
+            <td class="c-gv">Nguyễn Thị Nhung</td>
+            <td class="c-ngay">25/09/2026</td>
+        </tr>
+        <tr style="background-color:#e8e8e8; font-weight:bold;">
+            <td colspan="8">TUẦN: 12 (28/09/2026 đến 04/10/2026)</td>
+        </tr>
+        <tr>
+            <td class="c-stt">3</td>
+            <td class="c-lop">Ngoại ngữ 1(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 2</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C5.202</td>
+            <td class="c-gv">Nguyễn Thị Phương Hoa</td>
+            <td class="c-ngay">28/09/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">4</td>
+            <td class="c-lop">Định hướng nghề nghiệp và khởi nghiệp nhóm ngành máy tính và CNTT(K25.CNTTI.01.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 3</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">Hội trường đa năng (1)</td>
+            <td class="c-gv">Vũ Thanh Huế</td>
+            <td class="c-ngay">29/09/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">5</td>
+            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
+            <td class="c-tc">2</td>
+            <td class="c-thu">Thứ 4</td>
+            <td class="c-tiet">8,9,10</td>
+            <td class="c-diadiem">Sân điền kinh 2</td>
+            <td class="c-gv">Nông Văn Đồng</td>
+            <td class="c-ngay">30/09/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">6</td>
+            <td class="c-lop">Nhập môn công nghệ số và trí tuệ nhân tạo(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 5</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.201</td>
+            <td class="c-gv">Nguyễn Thị Thu Hằng</td>
+            <td class="c-ngay">01/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">7</td>
+            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">4</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.303</td>
+            <td class="c-gv">Nguyễn Thị Nhung</td>
+            <td class="c-ngay">02/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">8</td>
+            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
+            <td class="c-tc">2</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">8,9,10</td>
+            <td class="c-diadiem">Sân điền kinh 2</td>
+            <td class="c-gv">Nông Văn Đồng</td>
+            <td class="c-ngay">02/10/2026</td>
+        </tr>
+        <tr style="background-color:#e8e8e8; font-weight:bold;">
+            <td colspan="8">TUẦN: 13 (05/10/2026 đến 11/10/2026)</td>
+        </tr>
+        <tr>
+            <td class="c-stt">9</td>
+            <td class="c-lop">Ngoại ngữ 1(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 2</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C5.202</td>
+            <td class="c-gv">Nguyễn Thị Phương Hoa</td>
+            <td class="c-ngay">05/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">10</td>
+            <td class="c-lop">Định hướng nghề nghiệp và khởi nghiệp nhóm ngành máy tính và CNTT(K25.CNTTI.01.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 3</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">Hội trường đa năng (1)</td>
+            <td class="c-gv">Vũ Thanh Huế</td>
+            <td class="c-ngay">06/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">11</td>
+            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
+            <td class="c-tc">2</td>
+            <td class="c-thu">Thứ 4</td>
+            <td class="c-tiet">8,9,10</td>
+            <td class="c-diadiem">Sân điền kinh 2</td>
+            <td class="c-gv">Nông Văn Đồng</td>
+            <td class="c-ngay">07/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">12</td>
+            <td class="c-lop">Nhập môn công nghệ số và trí tuệ nhân tạo(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">3</td>
+            <td class="c-thu">Thứ 5</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.201</td>
+            <td class="c-gv">Nguyễn Thị Thu Hằng</td>
+            <td class="c-ngay">08/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">13</td>
+            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
+            <td class="c-tc">4</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">1,2,3,4,5</td>
+            <td class="c-diadiem">C2.303</td>
+            <td class="c-gv">Nguyễn Thị Nhung</td>
+            <td class="c-ngay">09/10/2026</td>
+        </tr>
+        <tr>
+            <td class="c-stt">14</td>
+            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
+            <td class="c-tc">2</td>
+            <td class="c-thu">Thứ 6</td>
+            <td class="c-tiet">8,9,10</td>
+            <td class="c-diadiem">Sân điền kinh 2</td>
+            <td class="c-gv">Nông Văn Đồng</td>
+            <td class="c-ngay">09/10/2026</td>
+        </tr>
+    </tbody>
+</table>`;
+
+        // Modern visual color palettes for course cards
+        const COLOR_PALETTES = [
+            { bg: 'bg-[#f08a4b]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' }, // Orange
+            { bg: 'bg-[#8e52a8]', text: 'text-white', lightBg: 'bg-purple-50', border: 'border-purple-200' }, // Purple
+            { bg: 'bg-[#21b29a]', text: 'text-white', lightBg: 'bg-teal-50', border: 'border-teal-200' }, // Teal
+            { bg: 'bg-[#4073d8]', text: 'text-white', lightBg: 'bg-blue-50', border: 'border-blue-200' }, // Blue
+            { bg: 'bg-[#e05263]', text: 'text-white', lightBg: 'bg-rose-50', border: 'border-rose-200' }, // Rose
+            { bg: 'bg-[#419b48]', text: 'text-white', lightBg: 'bg-emerald-50', border: 'border-emerald-200' }, // Green
+        ];
+
+        // Default period time map
+        const DEFAULT_PERIOD_TIMES = {
+            1: { start: '07:00', end: '07:50' },
+            2: { start: '07:55', end: '08:45' },
+            3: { start: '08:50', end: '09:40' },
+            4: { start: '09:45', end: '10:35' },
+            5: { start: '10:40', end: '11:30' },
+            6: { start: '13:00', end: '13:50' },
+            7: { start: '13:55', end: '14:45' },
+            8: { start: '14:50', end: '15:40' },
+            9: { start: '15:45', end: '16:35' },
+            10: { start: '16:40', end: '17:30' },
+            11: { start: '18:00', end: '18:50' },
+            12: { start: '18:55', end: '19:45' }
+        };
+
+        // App state
+        let appState = {
+            rawHtml: '',
+            weeks: [],
+            allLessons: [],
+            selectedWeekNum: null,
+            selectedDateStr: null, // "DD/MM/YYYY" or null for all week
+            subjectColorMap: {},
+            periodTimes: JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES)),
+            isMonthOpen: false,
+            monthViewYear: new Date().getFullYear(),
+            monthViewMonth: new Date().getMonth() // 0-indexed
+        };
+
+        // Local Storage Keys
+        const STORAGE_KEY_HTML = 'lich_hoc_html_data_v2';
+        const STORAGE_KEY_PERIODS = 'lich_hoc_period_times_v2';
+
+        function saveToStorage() {
+            try {
+                if (appState.rawHtml) {
+                    localStorage.setItem(STORAGE_KEY_HTML, appState.rawHtml);
+                }
+                localStorage.setItem(STORAGE_KEY_PERIODS, JSON.stringify(appState.periodTimes));
+                
+                const badge = document.getElementById('savedStateBadge');
+                if (badge) {
+                    badge.textContent = 'Đã lưu tự động';
+                    badge.classList.remove('opacity-0');
+                    setTimeout(() => badge.classList.add('opacity-80'), 2000);
+                }
+            } catch (err) {
+                console.warn('Storage save failed:', err);
+            }
+        }
+
+        function loadFromStorage() {
+            try {
+                const storedPeriods = localStorage.getItem(STORAGE_KEY_PERIODS);
+                if (storedPeriods) {
+                    appState.periodTimes = JSON.parse(storedPeriods);
+                }
+
+                const storedHtml = localStorage.getItem(STORAGE_KEY_HTML);
+                if (storedHtml && storedHtml.trim().length > 0) {
+                    return storedHtml;
+                }
+            } catch (err) {
+                console.warn('Storage load failed:', err);
+            }
+            return SAMPLE_HTML_TABLE;
+        }
+
+        function parseTableHTML(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const rows = doc.querySelectorAll('tr');
+
+            let weeksMap = new Map();
+            let currentWeek = null;
+            let lessons = [];
+
+            rows.forEach((row) => {
+                const textContent = row.textContent.trim();
+
+                if (textContent.includes('TUẦN:')) {
+                    const weekMatch = textContent.match(/TUẦN:\s*(\d+)\s*\((.*?)\s+đến\s+(.*?)\)/i);
+                    if (weekMatch) {
+                        const weekNum = parseInt(weekMatch[1], 10);
+                        const startDate = weekMatch[2].trim();
+                        const endDate = weekMatch[3].trim();
+
+                        currentWeek = {
+                            weekNum: weekNum,
+                            startDateStr: startDate,
+                            endDateStr: endDate,
+                            startDateObj: parseDateDDMMYYYY(startDate),
+                            endDateObj: parseDateDDMMYYYY(endDate),
+                            items: []
+                        };
+
+                        if (!weeksMap.has(weekNum)) {
+                            weeksMap.set(weekNum, currentWeek);
+                        } else {
+                            currentWeek = weeksMap.get(weekNum);
+                        }
+                    }
+                    return;
+                }
+
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 7) {
+                    const stt = getCellText(row, '.c-stt') || cells[0]?.textContent?.trim();
+                    const courseFull = getCellText(row, '.c-lop') || cells[1]?.textContent?.trim();
+                    const tc = getCellText(row, '.c-tc') || cells[2]?.textContent?.trim();
+                    const thu = getCellText(row, '.c-thu') || cells[3]?.textContent?.trim();
+                    const tiet = getCellText(row, '.c-tiet') || cells[4]?.textContent?.trim();
+                    const room = getCellText(row, '.c-diadiem') || cells[5]?.textContent?.trim();
+                    const teacher = getCellText(row, '.c-gv') || cells[6]?.textContent?.trim();
+                    const dateStr = getCellText(row, '.c-ngay') || cells[7]?.textContent?.trim();
+
+                    if (courseFull && dateStr && dateStr.includes('/')) {
+                        const lessonObj = {
+                            id: 'ls_' + Math.random().toString(36).substring(2, 9),
+                            stt,
+                            courseFull,
+                            courseName: extractSubjectName(courseFull),
+                            courseCode: extractSubjectCode(courseFull),
+                            credits: tc,
+                            dayOfWeek: thu,
+                            periodsStr: tiet,
+                            periodsArr: tiet.split(',').map(p => parseInt(p.trim(), 10)).filter(p => !isNaN(p)),
+                            room,
+                            teacher,
+                            dateStr,
+                            dateObj: parseDateDDMMYYYY(dateStr),
+                            weekNum: currentWeek ? currentWeek.weekNum : null
+                        };
+
+                        lessons.push(lessonObj);
+                        if (currentWeek) {
+                            currentWeek.items.push(lessonObj);
+                        }
+                    }
+                }
+            });
+
+            const weeksArray = Array.from(weeksMap.values()).sort((a, b) => a.weekNum - b.weekNum);
+
+            return {
+                weeks: weeksArray,
+                allLessons: lessons
+            };
+        }
+
+        function getCellText(row, selector) {
+            const el = row.querySelector(selector);
+            return el ? el.textContent.trim() : '';
+        }
+
+        function extractSubjectName(fullStr) {
+            if (!fullStr) return '';
+            const idx = fullStr.indexOf('(');
+            return idx > -1 ? fullStr.substring(0, idx).trim() : fullStr.trim();
+        }
+
+        function extractSubjectCode(fullStr) {
+            if (!fullStr) return '';
+            const match = fullStr.match(/\((.*?)\)/);
+            return match ? match[1] : '';
+        }
+
+        function parseDateDDMMYYYY(str) {
+            if (!str) return new Date();
+            const parts = str.split('/');
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return new Date();
+        }
+
+        function formatDateDDMMYYYY(d) {
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            return `${day}/${month}/${d.getFullYear()}`;
+        }
+
+        function getPeriodsTimeRange(periodsArr) {
+            if (!periodsArr || periodsArr.length === 0) return 'Lịch học';
+            const first = periodsArr[0];
+            const last = periodsArr[periodsArr.length - 1];
+
+            const startTime = appState.periodTimes[first]?.start || '07:00';
+            const endTime = appState.periodTimes[last]?.end || '11:30';
+
+            return `${startTime} - ${endTime}`;
+        }
+
+        function getShortDayLabel(dayOfWeekStr) {
+            if (!dayOfWeekStr) return '';
+            const str = dayOfWeekStr.toLowerCase();
+            if (str.includes('2') || str.includes('hai')) return 'T2';
+            if (str.includes('3') || str.includes('ba')) return 'T3';
+            if (str.includes('4') || str.includes('tư') || str.includes('bốn')) return 'T4';
+            if (str.includes('5') || str.includes('năm')) return 'T5';
+            if (str.includes('6') || str.includes('sáu')) return 'T6';
+            if (str.includes('7') || str.includes('bảy')) return 'T7';
+            if (str.includes('chủ nhật') || str.includes('cn')) return 'CN';
+            return dayOfWeekStr;
+        }
+
+        function assignSubjectColors(lessons) {
+            let colorMap = {};
+            let colorIndex = 0;
+
+            lessons.forEach(l => {
+                if (!colorMap[l.courseName]) {
+                    colorMap[l.courseName] = COLOR_PALETTES[colorIndex % COLOR_PALETTES.length];
+                    colorIndex++;
+                }
+            });
+
+            appState.subjectColorMap = colorMap;
+        }
+
+        function renderWeekSelector() {
+            const weekSelect = document.getElementById('weekSelect');
+            weekSelect.innerHTML = '';
+
+            if (appState.weeks.length === 0) {
+                weekSelect.innerHTML = `<option value="">Không có dữ liệu tuần</option>`;
+                return;
+            }
+
+            appState.weeks.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w.weekNum;
+                opt.textContent = `TUẦN: ${w.weekNum} (${w.startDateStr} đến ${w.endDateStr})`;
+                if (w.weekNum === appState.selectedWeekNum) {
+                    opt.selected = true;
+                }
+                weekSelect.appendChild(opt);
+            });
+        }
+
+        function renderDaysStrip() {
+            const daysStrip = document.getElementById('daysStrip');
+            daysStrip.innerHTML = '';
+
+            const currentWeek = appState.weeks.find(w => w.weekNum === appState.selectedWeekNum);
+            if (!currentWeek) return;
+
+            const today = new Date();
+            const todayStr = formatDateDDMMYYYY(today);
+
+            const startDate = new Date(currentWeek.startDateObj);
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(startDate);
+                d.setDate(startDate.getDate() + i);
+
+                const fullDateStr = formatDateDDMMYYYY(d);
+                const hasLessons = currentWeek.items.some(item => item.dateStr === fullDateStr);
+                const isSelected = appState.selectedDateStr === fullDateStr;
+                const isToday = fullDateStr === todayStr;
+
+                const dayLabels = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                const dayLabel = dayLabels[d.getDay()];
+
+                const dayEl = document.createElement('div');
+                dayEl.className = `flex flex-col items-center justify-center p-1.5 rounded-xl cursor-pointer transition ${
+                    isSelected 
+                        ? 'bg-brand-500 text-white shadow font-bold' 
+                        : 'hover:bg-gray-100 text-gray-700'
+                }`;
+
+                dayEl.onclick = () => {
+                    if (appState.selectedDateStr === fullDateStr) {
+                        appState.selectedDateStr = null;
+                    } else {
+                        appState.selectedDateStr = fullDateStr;
+                    }
+                    updateView();
+                };
+
+                let circleClass = '';
+                if (isSelected) {
+                    circleClass = 'bg-white text-brand-600 font-extrabold';
+                } else if (isToday) {
+                    circleClass = 'bg-orange-500 text-white font-bold ring-2 ring-orange-200';
+                }
+
+                dayEl.innerHTML = `
+                    <span class="text-[10px] font-semibold opacity-75 mb-0.5">${dayLabel}</span>
+                    <div class="relative w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold ${circleClass}">
+                        ${d.getDate()}
+                        ${hasLessons && !isSelected ? '<span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>' : ''}
+                    </div>
+                `;
+
+                daysStrip.appendChild(dayEl);
+            }
+        }
+
+        function renderMonthCalendar() {
+            const label = document.getElementById('monthYearLabel');
+            const grid = document.getElementById('monthDaysGrid');
+            grid.innerHTML = '';
+
+            const year = appState.monthViewYear;
+            const month = appState.monthViewMonth;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            label.textContent = `THÁNG ${month + 1} / ${year}`;
+
+            const today = new Date();
+            const todayStr = formatDateDDMMYYYY(today);
+
+            let startDayIndex = firstDay.getDay() - 1;
+            if (startDayIndex === -1) startDayIndex = 6;
+
+            for (let i = 0; i < startDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'h-8';
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const cellDate = new Date(year, month, day);
+                const cellDateStr = formatDateDDMMYYYY(cellDate);
+
+                const hasLessons = appState.allLessons.some(l => l.dateStr === cellDateStr);
+
+                const isToday = cellDateStr === todayStr;
+                const isSelected = appState.selectedDateStr === cellDateStr;
+
+                const cell = document.createElement('div');
+                cell.className = 'flex flex-col items-center justify-center h-8 relative cursor-pointer rounded-lg hover:bg-gray-200/60 transition';
+
+                let badgeStyle = 'text-xs font-semibold text-gray-700';
+                if (isSelected) {
+                    badgeStyle = 'bg-brand-500 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-sm';
+                } else if (isToday) {
+                    badgeStyle = 'bg-orange-500 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-sm ring-2 ring-orange-200';
+                }
+
+                cell.onclick = () => {
+                    appState.selectedDateStr = cellDateStr;
+                    
+                    const matchedLesson = appState.allLessons.find(l => l.dateStr === cellDateStr);
+                    if (matchedLesson && matchedLesson.weekNum) {
+                        appState.selectedWeekNum = matchedLesson.weekNum;
+                    }
+
+                    updateView();
+                };
+
+                cell.innerHTML = `
+                    <span class="${badgeStyle}">${day}</span>
+                    ${hasLessons && !isToday && !isSelected ? '<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full absolute bottom-0.5"></span>' : ''}
+                `;
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function renderScheduleCards() {
+            const container = document.getElementById('scheduleContainer');
+            const emptyState = document.getElementById('emptyState');
+            const activeFilterBadge = document.getElementById('activeFilterBadge');
+            const resetFilterBtn = document.getElementById('resetFilterBtn');
+
+            container.innerHTML = '';
+
+            const currentWeek = appState.weeks.find(w => w.weekNum === appState.selectedWeekNum);
+            if (!currentWeek) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            let filteredLessons = [...currentWeek.items];
+
+            if (appState.selectedDateStr) {
+                filteredLessons = filteredLessons.filter(l => l.dateStr === appState.selectedDateStr);
+                activeFilterBadge.textContent = `Lọc ngày: ${appState.selectedDateStr}`;
+                resetFilterBtn.classList.remove('hidden');
+            } else {
+                activeFilterBadge.textContent = `Lịch học cả Tuần ${currentWeek.weekNum}`;
+                resetFilterBtn.classList.add('hidden');
+            }
+
+            if (filteredLessons.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            filteredLessons.sort((a, b) => {
+                if (a.dateObj.getTime() !== b.dateObj.getTime()) {
+                    return a.dateObj.getTime() - b.dateObj.getTime();
+                }
+                const firstA = a.periodsArr[0] || 0;
+                const firstB = b.periodsArr[0] || 0;
+                return firstA - firstB;
+            });
+
+            filteredLessons.forEach((lesson) => {
+                const palette = appState.subjectColorMap[lesson.courseName] || COLOR_PALETTES[0];
+                const dayNum = lesson.dateObj ? lesson.dateObj.getDate() : '';
+                const shortDay = getShortDayLabel(lesson.dayOfWeek);
+                const timeRange = getPeriodsTimeRange(lesson.periodsArr);
+
+                const cardEl = document.createElement('div');
+                cardEl.className = 'flex items-start space-x-3 group active:scale-[0.99] transition-transform';
+
+                cardEl.innerHTML = `
+                    <div class="flex flex-col items-center justify-center pt-2 min-w-[36px] text-center">
+                        <span class="text-xl font-black text-gray-500 group-hover:text-brand-600 transition">${dayNum}</span>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${shortDay}</span>
+                    </div>
+
+                    <div class="flex-1 ${palette.bg} ${palette.text} rounded-2xl p-4 card-shadow relative overflow-hidden transition-all duration-200">
+                        <div class="flex items-center justify-between border-b border-white/20 pb-2 mb-2.5">
+                            <span class="text-xs sm:text-sm font-extrabold tracking-wide flex items-center">
+                                <i class="fa-regular fa-clock mr-1.5 text-xs opacity-90"></i> ${timeRange}
+                            </span>
+                            <span class="inline-flex items-center text-[10px] font-semibold bg-black/15 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                                Lịch học <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full ml-1"></span>
+                            </span>
+                        </div>
+
+                        <h3 class="text-sm font-bold leading-snug mb-2">
+                            ${lesson.courseFull}
+                        </h3>
+
+                        <div class="space-y-1 text-xs font-normal opacity-95">
+                            <div class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-white/70 rounded-full mr-2"></span>
+                                <span>Tiết: <strong>${lesson.periodsStr}</strong></span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-white/70 rounded-full mr-2"></span>
+                                <span>Phòng: <strong>${lesson.room || 'Chưa xếp'}</strong></span>
+                            </div>
+                            ${lesson.teacher ? `
+                            <div class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-white/70 rounded-full mr-2"></span>
+                                <span>GV: <strong>${lesson.teacher}</strong></span>
+                            </div>
+                            ` : ''}
+                            ${lesson.credits ? `
+                            <div class="flex items-center text-[11px] opacity-80 pt-0.5">
+                                <span class="w-1.5 h-1.5 bg-white/50 rounded-full mr-2"></span>
+                                <span>Số tín chỉ: ${lesson.credits} TC</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(cardEl);
+            });
+        }
+
+        function toggleMonthCalendar(forceState = null) {
+            const container = document.getElementById('monthCalendarContainer');
+            const toggleText = document.getElementById('monthToggleText');
+            const toggleIcon = document.getElementById('monthToggleIcon');
+
+            appState.isMonthOpen = forceState !== null ? forceState : !appState.isMonthOpen;
+
+            if (appState.isMonthOpen) {
+                renderMonthCalendar();
+                container.style.maxHeight = '320px';
+                container.classList.remove('opacity-0');
+                container.classList.add('opacity-100');
+                toggleText.textContent = 'Thu gọn lịch tháng';
+                toggleIcon.className = 'fa-solid fa-chevron-up ml-1.5 text-[10px]';
+            } else {
+                container.style.maxHeight = '0px';
+                container.classList.remove('opacity-100');
+                container.classList.add('opacity-0');
+                toggleText.textContent = 'Vuốt xuống để mở lịch tháng';
+                toggleIcon.className = 'fa-solid fa-chevron-down ml-1.5 text-[10px]';
+            }
+        }
+
+        function updateView() {
+            renderWeekSelector();
+            renderDaysStrip();
+            if (appState.isMonthOpen) renderMonthCalendar();
+            renderScheduleCards();
+        }
+
+        function loadHTMLContent(htmlText) {
+            const parsed = parseTableHTML(htmlText);
+            if (parsed.weeks.length === 0 || parsed.allLessons.length === 0) {
+                alert('Không thể trích xuất dữ liệu lịch học. Vui lòng kiểm tra lại cấu trúc thẻ <table> HTML đã dán.');
+                return false;
+            }
+
+            appState.rawHtml = htmlText;
+            appState.weeks = parsed.weeks;
+            appState.allLessons = parsed.allLessons;
+            appState.selectedWeekNum = parsed.weeks[0].weekNum;
+            appState.selectedDateStr = null;
+
+            if (parsed.allLessons[0] && parsed.allLessons[0].dateObj) {
+                appState.monthViewYear = parsed.allLessons[0].dateObj.getFullYear();
+                appState.monthViewMonth = parsed.allLessons[0].dateObj.getMonth();
+            }
+
+            assignSubjectColors(parsed.allLessons);
+            saveToStorage();
+            updateView();
+            return true;
+        }
+
+        function renderSettingsInputs() {
+            const listContainer = document.getElementById('periodSettingsList');
+            listContainer.innerHTML = '';
+
+            for (let i = 1; i <= 12; i++) {
+                const item = appState.periodTimes[i] || { start: '', end: '' };
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-gray-50 p-2 rounded-xl text-xs border border-gray-100';
+                row.innerHTML = `
+                    <span class="font-bold text-gray-700 w-16">Tiết ${i}:</span>
+                    <div class="flex items-center space-x-1.5">
+                        <input type="time" data-period="${i}" data-type="start" value="${item.start}" class="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <span class="text-gray-400">-</span>
+                        <input type="time" data-period="${i}" data-type="end" value="${item.end}" class="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            }
+        }
+
+        function exportToICal() {
+            if (!appState.allLessons || appState.allLessons.length === 0) {
+                alert('Không có lịch học nào để xuất!');
+                return;
+            }
+
+            let icsLines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//LichHocThongMinh//VN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH'
+            ];
+
+            appState.allLessons.forEach((lesson) => {
+                if (!lesson.dateObj || lesson.periodsArr.length === 0) return;
+
+                const firstPeriod = lesson.periodsArr[0];
+                const lastPeriod = lesson.periodsArr[lesson.periodsArr.length - 1];
+
+                const startTimeStr = appState.periodTimes[firstPeriod]?.start || '07:00';
+                const endTimeStr = appState.periodTimes[lastPeriod]?.end || '11:30';
+
+                const [sHours, sMins] = startTimeStr.split(':').map(Number);
+                const [eHours, eMins] = endTimeStr.split(':').map(Number);
+
+                const dtStart = new Date(lesson.dateObj);
+                dtStart.setHours(sHours, sMins, 0);
+
+                const dtEnd = new Date(lesson.dateObj);
+                dtEnd.setHours(eHours, eMins, 0);
+
+                const formatDateForICS = (dt) => {
+                    return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                };
+
+                icsLines.push('BEGIN:VEVENT');
+                icsLines.push(`SUMMARY:${lesson.courseName}`);
+                icsLines.push(`DESCRIPTION:Lớp: ${lesson.courseFull}\\nTiết: ${lesson.periodsStr}\\nGV: ${lesson.teacher || 'Chưa cập nhật'}`);
+                icsLines.push(`LOCATION:${lesson.room || 'Trường'}`);
+                icsLines.push(`DTSTART:${formatDateForICS(dtStart)}`);
+                icsLines.push(`DTEND:${formatDateForICS(dtEnd)}`);
+                icsLines.push('END:VEVENT');
+            });
+
+            icsLines.push('END:VCALENDAR');
+
+            const icsData = icsLines.join('\r\n');
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', 'Lich_Hoc_Ca_Nhan.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function setupTouchGestures() {
+            const headerZone = document.getElementById('gestureHeaderZone');
+            let touchStartY = 0;
+            let touchStartX = 0;
+
+            headerZone.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+            }, { passive: true });
+
+            headerZone.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchEndX = e.changedTouches[0].clientX;
+
+                const diffY = touchEndY - touchStartY;
+                const diffX = touchEndX - touchStartX;
+
+                if (Math.abs(diffY) > 40 && Math.abs(diffY) > Math.abs(diffX)) {
+                    if (diffY > 0 && !appState.isMonthOpen) {
+                        toggleMonthCalendar(true);
+                    } else if (diffY < 0 && appState.isMonthOpen) {
+                        toggleMonthCalendar(false);
+                    }
+                }
+            }, { passive: true });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const importModal = document.getElementById('importModal');
+            const settingsModal = document.getElementById('settingsModal');
+            const htmlInputArea = document.getElementById('htmlInputArea');
+
+            setupTouchGestures();
+
+            document.getElementById('toggleMonthBtn').onclick = () => toggleMonthCalendar();
+
+            document.getElementById('prevMonthBtn').onclick = () => {
+                if (appState.monthViewMonth === 0) {
+                    appState.monthViewMonth = 11;
+                    appState.monthViewYear--;
+                } else {
+                    appState.monthViewMonth--;
+                }
+                renderMonthCalendar();
+            };
+
+            document.getElementById('nextMonthBtn').onclick = () => {
+                if (appState.monthViewMonth === 11) {
+                    appState.monthViewMonth = 0;
+                    appState.monthViewYear++;
+                } else {
+                    appState.monthViewMonth++;
+                }
+                renderMonthCalendar();
+            };
+
+            document.getElementById('openImportBtn').onclick = () => {
+                htmlInputArea.value = appState.rawHtml || '';
+                importModal.classList.remove('hidden');
+            };
+
+            document.getElementById('closeImportModal').onclick = () => importModal.classList.add('hidden');
+            document.getElementById('cancelImportBtn').onclick = () => importModal.classList.add('hidden');
+
+            document.getElementById('loadSampleBtn').onclick = () => {
+                htmlInputArea.value = SAMPLE_HTML_TABLE;
+            };
+
+            document.getElementById('processHtmlBtn').onclick = () => {
+                const val = htmlInputArea.value.trim();
+                if (!val) {
+                    alert('Vui lòng dán mã HTML lịch học trước.');
+                    return;
+                }
+                if (loadHTMLContent(val)) {
+                    importModal.classList.add('hidden');
+                }
+            };
+
+            document.getElementById('weekSelect').onchange = (e) => {
+                appState.selectedWeekNum = parseInt(e.target.value, 10);
+                appState.selectedDateStr = null;
+                updateView();
+            };
+
+            document.getElementById('prevWeekBtn').onclick = () => {
+                const idx = appState.weeks.findIndex(w => w.weekNum === appState.selectedWeekNum);
+                if (idx > 0) {
+                    appState.selectedWeekNum = appState.weeks[idx - 1].weekNum;
+                    appState.selectedDateStr = null;
+                    updateView();
+                }
+            };
+
+            document.getElementById('nextWeekBtn').onclick = () => {
+                const idx = appState.weeks.findIndex(w => w.weekNum === appState.selectedWeekNum);
+                if (idx < appState.weeks.length - 1) {
+                    appState.selectedWeekNum = appState.weeks[idx + 1].weekNum;
+                    appState.selectedDateStr = null;
+                    updateView();
+                }
+            };
+
+            document.getElementById('resetFilterBtn').onclick = () => {
+                appState.selectedDateStr = null;
+                updateView();
+            };
+
+            document.getElementById('openSettingsBtn').onclick = () => {
+                renderSettingsInputs();
+                settingsModal.classList.remove('hidden');
+            };
+
+            document.getElementById('closeSettingsModal').onclick = () => settingsModal.classList.add('hidden');
+
+            document.getElementById('resetPeriodsBtn').onclick = () => {
+                appState.periodTimes = JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES));
+                renderSettingsInputs();
+            };
+
+            document.getElementById('saveSettingsBtn').onclick = () => {
+                const inputs = document.querySelectorAll('#periodSettingsList input');
+                inputs.forEach(input => {
+                    const period = input.getAttribute('data-period');
+                    const type = input.getAttribute('data-type');
+                    if (!appState.periodTimes[period]) appState.periodTimes[period] = {};
+                    appState.periodTimes[period][type] = input.value;
+                });
+                saveToStorage();
+                settingsModal.classList.add('hidden');
+                updateView();
+            };
+
+            document.getElementById('exportIcalBtn').onclick = exportToICal;
+
+            const initialHtml = loadFromStorage();
+            loadHTMLContent(initialHtml);
+        });
+    </script>
+</body>
+</html>
