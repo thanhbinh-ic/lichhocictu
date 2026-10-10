@@ -72,6 +72,13 @@
             transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease-in-out;
             will-change: max-height, opacity;
         }
+        /* Standardize custom select styling for older iOS Safari (iPhone 8) */
+        .custom-select-dropdown {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 1.25rem !important;
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-full flex flex-col justify-between select-none relative transition-colors duration-200">
@@ -108,16 +115,20 @@
         </div>
 
         <div id="gestureHeaderZone" class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 shadow-sm relative transition-colors duration-200">
-            <!-- Week Selector Header -->
+            <!-- Week Selector Header (Sửa lỗi mũi tên sỗ ra trên iPhone 8 / iOS cũ) -->
             <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-700/60 text-xs">
                 <button id="prevWeekBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-1.5">
                     <i class="fa-regular fa-clock text-brand-500 dark:text-emerald-400"></i>
-                    <select id="weekSelect" class="bg-transparent font-bold text-gray-800 dark:text-gray-100 focus:outline-none cursor-pointer text-xs sm:text-sm">
-                        <!-- Filled dynamically -->
-                    </select>
+                    <!-- Bọc select trong wrapper relative với icon mũi tên rõ ràng cho iOS cũ -->
+                    <div class="relative flex items-center">
+                        <select id="weekSelect" class="bg-transparent font-bold text-gray-800 dark:text-gray-100 focus:outline-none cursor-pointer text-xs sm:text-sm custom-select-dropdown pr-4">
+                            <!-- Filled dynamically -->
+                        </select>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-gray-500 dark:text-gray-400 absolute right-0 pointer-events-none"></i>
+                    </div>
                 </div>
                 <button id="nextWeekBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
                     <i class="fa-solid fa-chevron-right"></i>
@@ -160,7 +171,7 @@
                     </div>
 
                     <!-- Legend indicators -->
-                    <div class="flex items-center justify-center space-x-4 mt-3 text-[10px] text-gray-500 dark:text-gray-400 border-t border-gray-200/60 dark:border-gray-700/60 pt-2">
+                    <div class="flex items-center justify-center space-x-3 sm:space-x-4 mt-3 text-[10px] text-gray-500 dark:text-gray-400 border-t border-gray-200/60 dark:border-gray-700/60 pt-2">
                         <div class="flex items-center space-x-1">
                             <span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span>
                             <span>Hôm nay</span>
@@ -1059,6 +1070,7 @@
             });
         }
 
+        // Sửa lỗi đè chữ khi lịch tháng có 6 hàng bằng cách tăng max-height lên 400px
         function toggleMonthCalendar(forceState = null) {
             const container = document.getElementById('monthCalendarContainer');
             const toggleText = document.getElementById('monthToggleText');
@@ -1068,7 +1080,7 @@
 
             if (appState.isMonthOpen) {
                 renderMonthCalendar();
-                container.style.maxHeight = '320px';
+                container.style.maxHeight = '400px';
                 container.classList.remove('opacity-0');
                 container.classList.add('opacity-100');
                 toggleText.textContent = 'Thu gọn lịch tháng';
