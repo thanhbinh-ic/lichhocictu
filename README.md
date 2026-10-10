@@ -4,6 +4,10 @@
 
 ---
 
+[![Vercel App](https://img.shields.io/badge/LIVE_DEMO-VERCEL_APP-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://lichhocictu.vercel.app/)
+
+---
+
 ## Tính năng nổi bật
 
 - ** Nhập lịch học đa dạng:**
