@@ -1,3 +1,5 @@
+![Banner](https://github.com/thanhbinh-ic/lichhocictu/blob/9e0e9c9ee3e3ad39ab711ae05dfe0b5895b7b928/img/banner.png)
+
 # Lịch Học Thông Minh (Smart Schedule)
 
 **Lịch Học Thông Minh** là một ứng dụng web dạng PWA (Progressive Web App) gọn nhẹ, giao diện hiện đại, giúp sinh viên tra cứu, quản lý và theo dõi lịch học cá nhân một cách trực quan. Ứng dụng hỗ trợ trích xuất dữ liệu tự động từ cổng thông tin đào tạo sinh viên (đặc biệt tối ưu cho hệ thống `sinhvien.ictu.edu.vn`).
