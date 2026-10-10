@@ -1,4 +1,6 @@
-![Banner](https://github.com/thanhbinh-ic/lichhocictu/blob/9e0e9c9ee3e3ad39ab711ae05dfe0b5895b7b928/img/banner.png)
+<p align="center">
+  <img src="img/banner.png" alt="Banner">
+</p>
 
 # Lịch Học Thông Minh (Smart Schedule)
 
