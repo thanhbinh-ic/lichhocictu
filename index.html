@@ -219,7 +219,7 @@
             </div>
             <h3 class="text-base font-bold text-gray-700 dark:text-gray-200">Không có lịch học</h3>
             <p class="text-xs text-gray-400 dark:text-gray-400 mt-1 max-w-xs mx-auto">
-                Không có môn học nào trong ngày hoặc tuần bạn chọn.
+                Chưa có dữ liệu lịch học hoặc không có môn học trong ngày bạn chọn.
             </p>
             <button onclick="document.getElementById('openImportBtn').click()" class="mt-4 px-4 py-2.5 bg-brand-500 text-white text-xs font-bold rounded-xl shadow-md hover:bg-brand-600 active:scale-95 transition">
                 <i class="fa-solid fa-plus mr-1.5"></i> Nhập Lịch Học
@@ -404,176 +404,6 @@
             }, 3500);
         }
 
-        // Preset sample HTML table
-        const SAMPLE_HTML_TABLE = `<table class="table table-bordered tkb-scroll table-condensed" cellspacing="1" cellpadding="1" rules="all" border="1" id="">
-    <thead>
-        <tr class="table-header">
-            <th class="c-stt">STT</th>
-            <th class="c-lop">Tên lớp học phần</th>
-            <th class="c-tc">Số TC</th>
-            <th class="c-thu">Thứ</th>
-            <th class="c-tiet">Tiết học</th>
-            <th class="c-diadiem">Địa điểm</th>
-            <th class="c-gv">Tên giảng viên</th>
-            <th class="c-ngay">Ngày học</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr style="background-color:#e8e8e8; font-weight:bold;">
-            <td colspan="8">TUẦN: 10 (14/09/2026 đến 20/09/2026)</td>
-        </tr>
-        <tr>
-            <td class="c-stt">1</td>
-            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">4</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.303</td>
-            <td class="c-gv">Nguyễn Thị Nhung</td>
-            <td class="c-ngay">18/09/2026</td>
-        </tr>
-        <tr style="background-color:#e8e8e8; font-weight:bold;">
-            <td colspan="8">TUẦN: 11 (21/09/2026 đến 27/09/2026)</td>
-        </tr>
-        <tr>
-            <td class="c-stt">2</td>
-            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">4</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.303</td>
-            <td class="c-gv">Nguyễn Thị Nhung</td>
-            <td class="c-ngay">25/09/2026</td>
-        </tr>
-        <tr style="background-color:#e8e8e8; font-weight:bold;">
-            <td colspan="8">TUẦN: 12 (28/09/2026 đến 04/10/2026)</td>
-        </tr>
-        <tr>
-            <td class="c-stt">3</td>
-            <td class="c-lop">Ngoại ngữ 1(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 2</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C5.202</td>
-            <td class="c-gv">Nguyễn Thị Phương Hoa</td>
-            <td class="c-ngay">28/09/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">4</td>
-            <td class="c-lop">Định hướng nghề nghiệp và khởi nghiệp nhóm ngành máy tính và CNTT(K25.CNTTI.01.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 3</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">Hội trường đa năng (1)</td>
-            <td class="c-gv">Vũ Thanh Huế</td>
-            <td class="c-ngay">29/09/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">5</td>
-            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
-            <td class="c-tc">2</td>
-            <td class="c-thu">Thứ 4</td>
-            <td class="c-tiet">8,9,10</td>
-            <td class="c-diadiem">Sân điền kinh 2</td>
-            <td class="c-gv">Nông Văn Đồng</td>
-            <td class="c-ngay">30/09/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">6</td>
-            <td class="c-lop">Nhập môn công nghệ số và trí tuệ nhân tạo(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 5</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.201</td>
-            <td class="c-gv">Nguyễn Thị Thu Hằng</td>
-            <td class="c-ngay">01/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">7</td>
-            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">4</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.303</td>
-            <td class="c-gv">Nguyễn Thị Nhung</td>
-            <td class="c-ngay">02/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">8</td>
-            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
-            <td class="c-tc">2</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">8,9,10</td>
-            <td class="c-diadiem">Sân điền kinh 2</td>
-            <td class="c-gv">Nông Văn Đồng</td>
-            <td class="c-ngay">02/10/2026</td>
-        </tr>
-        <tr style="background-color:#e8e8e8; font-weight:bold;">
-            <td colspan="8">TUẦN: 13 (05/10/2026 đến 11/10/2026)</td>
-        </tr>
-        <tr>
-            <td class="c-stt">9</td>
-            <td class="c-lop">Ngoại ngữ 1(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 2</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C5.202</td>
-            <td class="c-gv">Nguyễn Thị Phương Hoa</td>
-            <td class="c-ngay">05/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">10</td>
-            <td class="c-lop">Định hướng nghề nghiệp và khởi nghiệp nhóm ngành máy tính và CNTT(K25.CNTTI.01.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 3</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">Hội trường đa năng (1)</td>
-            <td class="c-gv">Vũ Thanh Huế</td>
-            <td class="c-ngay">06/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">11</td>
-            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
-            <td class="c-tc">2</td>
-            <td class="c-thu">Thứ 4</td>
-            <td class="c-tiet">8,9,10</td>
-            <td class="c-diadiem">Sân điền kinh 2</td>
-            <td class="c-gv">Nông Văn Đồng</td>
-            <td class="c-ngay">07/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">12</td>
-            <td class="c-lop">Nhập môn công nghệ số và trí tuệ nhân tạo(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">3</td>
-            <td class="c-thu">Thứ 5</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.201</td>
-            <td class="c-gv">Nguyễn Thị Thu Hằng</td>
-            <td class="c-ngay">08/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">13</td>
-            <td class="c-lop">Toán cao cấp(K25.CNTTI.04.K1.D1)</td>
-            <td class="c-tc">4</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">1,2,3,4,5</td>
-            <td class="c-diadiem">C2.303</td>
-            <td class="c-gv">Nguyễn Thị Nhung</td>
-            <td class="c-ngay">09/10/2026</td>
-        </tr>
-        <tr>
-            <td class="c-stt">14</td>
-            <td class="c-lop">Điền kinh 1(K25.GDTC.K1.D2.N06)</td>
-            <td class="c-tc">2</td>
-            <td class="c-thu">Thứ 6</td>
-            <td class="c-tiet">8,9,10</td>
-            <td class="c-diadiem">Sân điền kinh 2</td>
-            <td class="c-gv">Nông Văn Đồng</td>
-            <td class="c-ngay">09/10/2026</td>
-        </tr>
-    </tbody>
-</table>`;
-
         // Modern visual color palettes for course cards (Dark mode enhanced)
         const COLOR_PALETTES = [
             { bg: 'bg-[#f08a4b] dark:bg-[#c8682a]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' },
@@ -640,6 +470,8 @@
             try {
                 if (appState.rawHtml) {
                     localStorage.setItem(STORAGE_KEY_HTML, appState.rawHtml);
+                } else {
+                    localStorage.removeItem(STORAGE_KEY_HTML);
                 }
                 localStorage.setItem(STORAGE_KEY_PERIODS, JSON.stringify(appState.periodTimes));
                 
@@ -668,7 +500,7 @@
             } catch (err) {
                 console.warn('Storage load failed:', err);
             }
-            return SAMPLE_HTML_TABLE;
+            return ''; // Mặc định trống, không sử dụng lịch học mẫu
         }
 
         function parseTableHTML(htmlString) {
@@ -828,7 +660,7 @@
             weekSelect.innerHTML = '';
 
             if (appState.weeks.length === 0) {
-                weekSelect.innerHTML = `<option value="">Không có dữ liệu tuần</option>`;
+                weekSelect.innerHTML = `<option value="">Chưa có dữ liệu tuần</option>`;
                 return;
             }
 
@@ -1108,6 +940,13 @@
             appState.monthViewYear = today.getFullYear();
             appState.monthViewMonth = today.getMonth();
 
+            if (appState.weeks.length === 0) {
+                appState.selectedWeekNum = null;
+                appState.selectedDateStr = null;
+                updateView();
+                return;
+            }
+
             const matchedLesson = appState.allLessons.find(l => l.dateStr === todayStr);
             if (matchedLesson && matchedLesson.weekNum) {
                 appState.selectedWeekNum = matchedLesson.weekNum;
@@ -1130,6 +969,10 @@
         function loadHTMLContent(htmlText, isUserImport = false) {
             if (!htmlText || !htmlText.trim()) {
                 if (isUserImport) showToast('Vui lòng dán mã HTML lịch học!', 'error');
+                appState.rawHtml = '';
+                appState.weeks = [];
+                appState.allLessons = [];
+                goToToday();
                 return false;
             }
 
@@ -1379,7 +1222,7 @@
                 showToast('Cấu hình giờ tiết học đã được lưu thành công!', 'success');
             };
 
-            // Load initial state from browser storage or default sample
+            // Load initial state from browser storage
             const initialHtml = loadFromStorage();
             loadHTMLContent(initialHtml, false);
         });
