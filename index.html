@@ -98,8 +98,8 @@
                 </div>
             </div>
             <div class="flex items-center space-x-1 sm:space-x-2">
-                <button id="openImportBtn" title="Dán mã HTML lịch học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
-                    <i class="fa-solid fa-paste text-lg"></i>
+                <button id="openImportBtn" title="Nhập lịch học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i class="fa-solid fa-file-import text-lg"></i>
                 </button>
                 <button id="openSettingsBtn" title="Cấu hình tiết học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
                     <i class="fa-solid fa-sliders text-lg"></i>
@@ -232,17 +232,39 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-5 shadow-2xl flex flex-col max-h-[90vh] transition-colors duration-200 border border-gray-100 dark:border-gray-700">
             <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-code text-brand-500 dark:text-emerald-400 text-lg"></i>
-                    <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Dán HTML Bảng Lịch Học</h2>
+                    <i class="fa-solid fa-file-import text-brand-500 dark:text-emerald-400 text-lg"></i>
+                    <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Nhập lịch học</h2>
                 </div>
                 <button id="closeImportModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 min-w-[36px] min-h-[36px]">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 my-2">
-                Copy toàn bộ thẻ <code class="bg-gray-100 dark:bg-gray-700 text-red-500 dark:text-rose-400 px-1 py-0.5 rounded">&lt;html&gt;...&lt;/html&gt;</code> từ cổng thông tin đào tạo <code class="bg-gray-100 dark:bg-gray-700 text-red-500 dark:text-rose-400 px-1 py-0.5 rounded">sinhvien.ictu.edu.vn/TraCuuLichHoc/Index</code> và dán vào bên dưới:
+
+            <!-- Upload File Section -->
+            <div class="my-3">
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                    Tải tệp từ thiết bị (.txt, .html):
+                </label>
+                <div class="flex items-center gap-2">
+                    <button id="uploadFileBtn" type="button" class="px-3.5 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition flex items-center gap-2 border border-gray-200 dark:border-gray-600">
+                        <i class="fa-solid fa-upload text-brand-500 dark:text-emerald-400"></i>
+                        <span>Chọn file...</span>
+                    </button>
+                    <span id="fileNameDisplay" class="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[200px]">Chưa chọn file nào</span>
+                    <input type="file" id="fileInput" accept=".txt,.html,.htm" class="hidden">
+                </div>
+            </div>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                <span class="flex-shrink mx-2 text-[10px] text-gray-400 uppercase font-semibold">Hoặc dán mã HTML</span>
+                <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+            </div>
+
+            <p class="text-xs text-gray-500 dark:text-gray-400 my-1.5">
+                Copy toàn bộ thẻ <code class="bg-gray-100 dark:bg-gray-700 text-red-500 dark:text-rose-400 px-1 py-0.5 rounded">&lt;html&gt;...&lt;/html&gt;</code> từ portal sinh viên và dán vào bên dưới:
             </p>
-            <textarea id="htmlInputArea" rows="9" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-200"></textarea>
+            <textarea id="htmlInputArea" rows="7" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-200"></textarea>
 
             <div class="mt-4 flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                 <a href="huong-dan" class="px-3 py-2 text-xs text-brand-600 dark:text-emerald-400 font-semibold hover:bg-brand-50 dark:hover:bg-gray-700 rounded-lg transition inline-flex items-center">
@@ -968,7 +990,7 @@
 
         function loadHTMLContent(htmlText, isUserImport = false) {
             if (!htmlText || !htmlText.trim()) {
-                if (isUserImport) showToast('Vui lòng dán mã HTML lịch học!', 'error');
+                if (isUserImport) showToast('Vui lòng dán mã HTML hoặc chọn file lịch học!', 'error');
                 appState.rawHtml = '';
                 appState.weeks = [];
                 appState.allLessons = [];
@@ -977,7 +999,7 @@
             }
 
             if (!htmlText.toLowerCase().includes('<table')) {
-                if (isUserImport) showToast('Mã dán vào không chứa thẻ <table> hợp lệ!', 'error');
+                if (isUserImport) showToast('Nội dung không chứa thẻ <table> hợp lệ!', 'error');
                 return false;
             }
 
@@ -1032,6 +1054,9 @@
             const settingsModal = document.getElementById('settingsModal');
             const donateModal = document.getElementById('donateModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
+            const fileInput = document.getElementById('fileInput');
+            const uploadFileBtn = document.getElementById('uploadFileBtn');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
 
             // Hàm tự động Focus & Select chuẩn tương thích mobile iOS Safari & Android
             function selectAllInputContent() {
@@ -1046,6 +1071,30 @@
             // Tự động bôi đen khi người dùng chạm/chạm lần nữa vào khung nhập
             htmlInputArea.onfocus = selectAllInputContent;
             htmlInputArea.onclick = selectAllInputContent;
+
+            // Xử lý nạp file từ thiết bị
+            uploadFileBtn.onclick = () => fileInput.click();
+
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                fileNameDisplay.textContent = file.name;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const content = event.target.result;
+                    htmlInputArea.value = content;
+                    
+                    if (loadHTMLContent(content, true)) {
+                        importModal.classList.add('hidden');
+                    }
+                };
+                reader.onerror = () => {
+                    showToast('Đọc tệp thất bại. Vui lòng thử lại!', 'error');
+                };
+                reader.readAsText(file, 'UTF-8');
+            };
 
             // Xử lý chuyển đổi qua lại giữa 3 chế độ Theme: Auto -> Light -> Dark -> Auto
             document.getElementById('themeToggleBtn').onclick = () => {
@@ -1092,6 +1141,8 @@
             // Open Import Modal, ép mở bàn phím nhập liệu & bôi đen đồng bộ ngay khi bấm nút
             document.getElementById('openImportBtn').onclick = () => {
                 htmlInputArea.value = appState.rawHtml || '';
+                fileNameDisplay.textContent = 'Chưa chọn file nào';
+                fileInput.value = '';
                 importModal.classList.remove('hidden');
 
                 // Kích hoạt bàn phím ảo & bôi đen đồng bộ ngay lập tức để iOS/Android nhận diện Gesture
