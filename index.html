@@ -60,15 +60,12 @@
             transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease-in-out;
             will-change: max-height, opacity;
         }
-        .touch-pull-handle {
-            cursor: grab;
-        }
-        .touch-pull-handle:active {
-            cursor: grabbing;
-        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-full flex flex-col justify-between select-none">
+<body class="bg-gray-100 text-gray-800 min-h-full flex flex-col justify-between select-none relative">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
 
     <header class="bg-[#00897b] text-white sticky top-0 z-40 shadow-md pt-safe">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
@@ -126,9 +123,14 @@
                         <button id="prevMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
-                        <span id="monthYearLabel" class="text-xs font-bold text-gray-800 uppercase tracking-wide">
-                            Tháng --/----
-                        </span>
+                        <div class="flex items-center space-x-2">
+                            <span id="monthYearLabel" class="text-xs font-bold text-gray-800 tracking-wide">
+                                Tháng --/----
+                            </span>
+                            <button id="todayMonthBtn" class="px-2 py-0.5 bg-brand-500 text-white text-[10px] font-bold rounded-md hover:bg-brand-600 transition shadow-sm">
+                                Hôm nay
+                            </button>
+                        </div>
                         <button id="nextMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
@@ -158,11 +160,11 @@
                 </div>
             </div>
 
-            <!-- Swipe/Pull Handle Button -->
-            <div id="toggleMonthBtn" class="touch-pull-handle py-1.5 flex items-center justify-center text-[11px] text-gray-500 font-medium hover:text-brand-600 transition bg-gray-50/80 active:bg-gray-100 border-t border-gray-100">
-                <span id="monthToggleText">Vuốt xuống để mở lịch tháng</span>
+            <!-- Toggle Month Button -->
+            <button id="toggleMonthBtn" class="w-full py-2 flex items-center justify-center text-[11px] text-gray-600 font-semibold hover:text-brand-600 transition bg-gray-50/90 active:bg-gray-100 border-t border-gray-100">
+                <span id="monthToggleText">Mở lịch tháng</span>
                 <i id="monthToggleIcon" class="fa-solid fa-chevron-down ml-1.5 text-[10px]"></i>
-            </div>
+            </button>
         </div>
     </header>
 
@@ -262,6 +264,37 @@
     </div>
 
     <script>
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-gray-800 text-white';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') {
+                bgClass = 'bg-emerald-600 text-white';
+                icon = 'fa-circle-check';
+            } else if (type === 'error') {
+                bgClass = 'bg-rose-600 text-white';
+                icon = 'fa-circle-exclamation';
+            }
+
+            toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-xs font-medium ${bgClass} transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
         // Preset sample HTML table
         const SAMPLE_HTML_TABLE = `<table class="table table-bordered tkb-scroll table-condensed" cellspacing="1" cellpadding="1" rules="all" border="1" id="">
     <thead>
@@ -434,12 +467,12 @@
 
         // Modern visual color palettes for course cards
         const COLOR_PALETTES = [
-            { bg: 'bg-[#f08a4b]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' }, // Orange
-            { bg: 'bg-[#8e52a8]', text: 'text-white', lightBg: 'bg-purple-50', border: 'border-purple-200' }, // Purple
-            { bg: 'bg-[#21b29a]', text: 'text-white', lightBg: 'bg-teal-50', border: 'border-teal-200' }, // Teal
-            { bg: 'bg-[#4073d8]', text: 'text-white', lightBg: 'bg-blue-50', border: 'border-blue-200' }, // Blue
-            { bg: 'bg-[#e05263]', text: 'text-white', lightBg: 'bg-rose-50', border: 'border-rose-200' }, // Rose
-            { bg: 'bg-[#419b48]', text: 'text-white', lightBg: 'bg-emerald-50', border: 'border-emerald-200' }, // Green
+            { bg: 'bg-[#f08a4b]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' },
+            { bg: 'bg-[#8e52a8]', text: 'text-white', lightBg: 'bg-purple-50', border: 'border-purple-200' },
+            { bg: 'bg-[#21b29a]', text: 'text-white', lightBg: 'bg-teal-50', border: 'border-teal-200' },
+            { bg: 'bg-[#4073d8]', text: 'text-white', lightBg: 'bg-blue-50', border: 'border-blue-200' },
+            { bg: 'bg-[#e05263]', text: 'text-white', lightBg: 'bg-rose-50', border: 'border-rose-200' },
+            { bg: 'bg-[#419b48]', text: 'text-white', lightBg: 'bg-emerald-50', border: 'border-emerald-200' },
         ];
 
         // Default period time map
@@ -464,12 +497,12 @@
             weeks: [],
             allLessons: [],
             selectedWeekNum: null,
-            selectedDateStr: null, // "DD/MM/YYYY" or null for all week
+            selectedDateStr: null,
             subjectColorMap: {},
             periodTimes: JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES)),
             isMonthOpen: false,
             monthViewYear: new Date().getFullYear(),
-            monthViewMonth: new Date().getMonth() // 0-indexed
+            monthViewMonth: new Date().getMonth()
         };
 
         // Local Storage Keys
@@ -753,7 +786,7 @@
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
 
-            label.textContent = `THÁNG ${month + 1} / ${year}`;
+            label.textContent = `Tháng ${month + 1} / ${year}`;
 
             const today = new Date();
             const todayStr = formatDateDDMMYYYY(today);
@@ -926,7 +959,7 @@
                 container.style.maxHeight = '0px';
                 container.classList.remove('opacity-100');
                 container.classList.add('opacity-0');
-                toggleText.textContent = 'Vuốt xuống để mở lịch tháng';
+                toggleText.textContent = 'Mở lịch tháng';
                 toggleIcon.className = 'fa-solid fa-chevron-down ml-1.5 text-[10px]';
             }
         }
@@ -938,27 +971,62 @@
             renderScheduleCards();
         }
 
-        function loadHTMLContent(htmlText) {
+        // Jump to current date
+        function goToToday() {
+            const today = new Date();
+            const todayStr = formatDateDDMMYYYY(today);
+
+            appState.monthViewYear = today.getFullYear();
+            appState.monthViewMonth = today.getMonth();
+
+            const matchedLesson = appState.allLessons.find(l => l.dateStr === todayStr);
+            if (matchedLesson && matchedLesson.weekNum) {
+                appState.selectedWeekNum = matchedLesson.weekNum;
+                appState.selectedDateStr = todayStr;
+            } else {
+                const targetTime = today.getTime();
+                const matchedWeek = appState.weeks.find(w => targetTime >= w.startDateObj.getTime() && targetTime <= w.endDateObj.getTime() + 86400000);
+                if (matchedWeek) {
+                    appState.selectedWeekNum = matchedWeek.weekNum;
+                    appState.selectedDateStr = todayStr;
+                } else if (appState.weeks.length > 0) {
+                    appState.selectedWeekNum = appState.weeks[0].weekNum;
+                    appState.selectedDateStr = null;
+                }
+            }
+
+            updateView();
+        }
+
+        function loadHTMLContent(htmlText, isUserImport = false) {
+            if (!htmlText || !htmlText.trim()) {
+                if (isUserImport) showToast('Vui lòng dán mã HTML lịch học!', 'error');
+                return false;
+            }
+
+            if (!htmlText.toLowerCase().includes('<table')) {
+                if (isUserImport) showToast('Mã dán vào không chứa thẻ <table> hợp lệ!', 'error');
+                return false;
+            }
+
             const parsed = parseTableHTML(htmlText);
             if (parsed.weeks.length === 0 || parsed.allLessons.length === 0) {
-                alert('Không thể trích xuất dữ liệu lịch học. Vui lòng kiểm tra lại cấu trúc thẻ <table> HTML đã dán.');
+                if (isUserImport) showToast('Cấu trúc HTML không hợp lệ hoặc không có dữ liệu lịch học!', 'error');
                 return false;
             }
 
             appState.rawHtml = htmlText;
             appState.weeks = parsed.weeks;
             appState.allLessons = parsed.allLessons;
-            appState.selectedWeekNum = parsed.weeks[0].weekNum;
-            appState.selectedDateStr = null;
-
-            if (parsed.allLessons[0] && parsed.allLessons[0].dateObj) {
-                appState.monthViewYear = parsed.allLessons[0].dateObj.getFullYear();
-                appState.monthViewMonth = parsed.allLessons[0].dateObj.getMonth();
-            }
 
             assignSubjectColors(parsed.allLessons);
             saveToStorage();
-            updateView();
+            
+            goToToday();
+
+            if (isUserImport) {
+                showToast(`Trích xuất thành công ${parsed.weeks.length} tuần (${parsed.allLessons.length} buổi học)!`, 'success');
+            }
             return true;
         }
 
@@ -984,7 +1052,7 @@
 
         function exportToICal() {
             if (!appState.allLessons || appState.allLessons.length === 0) {
-                alert('Không có lịch học nào để xuất!');
+                showToast('Không có lịch học nào để xuất!', 'error');
                 return;
             }
 
@@ -1037,33 +1105,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-
-        function setupTouchGestures() {
-            const headerZone = document.getElementById('gestureHeaderZone');
-            let touchStartY = 0;
-            let touchStartX = 0;
-
-            headerZone.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-                touchStartX = e.touches[0].clientX;
-            }, { passive: true });
-
-            headerZone.addEventListener('touchend', (e) => {
-                const touchEndY = e.changedTouches[0].clientY;
-                const touchEndX = e.changedTouches[0].clientX;
-
-                const diffY = touchEndY - touchStartY;
-                const diffX = touchEndX - touchStartX;
-
-                if (Math.abs(diffY) > 40 && Math.abs(diffY) > Math.abs(diffX)) {
-                    if (diffY > 0 && !appState.isMonthOpen) {
-                        toggleMonthCalendar(true);
-                    } else if (diffY < 0 && appState.isMonthOpen) {
-                        toggleMonthCalendar(false);
-                    }
-                }
-            }, { passive: true });
+            showToast('Đã tải xuống file .ics thành công!', 'success');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1071,10 +1113,10 @@
             const settingsModal = document.getElementById('settingsModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
 
-            setupTouchGestures();
-
+            // Toggle Month Calendar Click
             document.getElementById('toggleMonthBtn').onclick = () => toggleMonthCalendar();
 
+            // Month navigation & today button
             document.getElementById('prevMonthBtn').onclick = () => {
                 if (appState.monthViewMonth === 0) {
                     appState.monthViewMonth = 11;
@@ -1095,6 +1137,11 @@
                 renderMonthCalendar();
             };
 
+            document.getElementById('todayMonthBtn').onclick = () => {
+                goToToday();
+            };
+
+            // Open Import Modal
             document.getElementById('openImportBtn').onclick = () => {
                 htmlInputArea.value = appState.rawHtml || '';
                 importModal.classList.remove('hidden');
@@ -1103,27 +1150,27 @@
             document.getElementById('closeImportModal').onclick = () => importModal.classList.add('hidden');
             document.getElementById('cancelImportBtn').onclick = () => importModal.classList.add('hidden');
 
+            // Load sample table button
             document.getElementById('loadSampleBtn').onclick = () => {
                 htmlInputArea.value = SAMPLE_HTML_TABLE;
             };
 
+            // Process HTML button
             document.getElementById('processHtmlBtn').onclick = () => {
                 const val = htmlInputArea.value.trim();
-                if (!val) {
-                    alert('Vui lòng dán mã HTML lịch học trước.');
-                    return;
-                }
-                if (loadHTMLContent(val)) {
+                if (loadHTMLContent(val, true)) {
                     importModal.classList.add('hidden');
                 }
             };
 
+            // Week Select Change
             document.getElementById('weekSelect').onchange = (e) => {
                 appState.selectedWeekNum = parseInt(e.target.value, 10);
                 appState.selectedDateStr = null;
                 updateView();
             };
 
+            // Prev/Next Week Buttons
             document.getElementById('prevWeekBtn').onclick = () => {
                 const idx = appState.weeks.findIndex(w => w.weekNum === appState.selectedWeekNum);
                 if (idx > 0) {
@@ -1142,11 +1189,13 @@
                 }
             };
 
+            // Reset Day Filter
             document.getElementById('resetFilterBtn').onclick = () => {
                 appState.selectedDateStr = null;
                 updateView();
             };
 
+            // Open Settings Modal
             document.getElementById('openSettingsBtn').onclick = () => {
                 renderSettingsInputs();
                 settingsModal.classList.remove('hidden');
@@ -1157,25 +1206,56 @@
             document.getElementById('resetPeriodsBtn').onclick = () => {
                 appState.periodTimes = JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES));
                 renderSettingsInputs();
+                showToast('Đã khôi phục khung giờ mặc định!', 'info');
             };
 
+            // Save Settings with logic validation
             document.getElementById('saveSettingsBtn').onclick = () => {
                 const inputs = document.querySelectorAll('#periodSettingsList input');
+                let newPeriods = {};
+
                 inputs.forEach(input => {
                     const period = input.getAttribute('data-period');
                     const type = input.getAttribute('data-type');
-                    if (!appState.periodTimes[period]) appState.periodTimes[period] = {};
-                    appState.periodTimes[period][type] = input.value;
+                    if (!newPeriods[period]) newPeriods[period] = {};
+                    newPeriods[period][type] = input.value;
                 });
+
+                let lastEndMinutes = -1;
+                for (let i = 1; i <= 12; i++) {
+                    const { start, end } = newPeriods[i] || {};
+                    if (start && end) {
+                        const [sH, sM] = start.split(':').map(Number);
+                        const [eH, eM] = end.split(':').map(Number);
+                        const startMins = sH * 60 + sM;
+                        const endMins = eH * 60 + eM;
+
+                        if (startMins >= endMins) {
+                            showToast(`Lỗi Tiết ${i}: Giờ bắt đầu phải nhỏ hơn giờ kết thúc!`, 'error');
+                            return;
+                        }
+
+                        if (startMins < lastEndMinutes) {
+                            showToast(`Lỗi Tiết ${i}: Giờ bắt đầu không được sớm hơn giờ kết thúc của Tiết ${i - 1}!`, 'error');
+                            return;
+                        }
+                        lastEndMinutes = endMins;
+                    }
+                }
+
+                appState.periodTimes = newPeriods;
                 saveToStorage();
                 settingsModal.classList.add('hidden');
                 updateView();
+                showToast('Cấu hình giờ tiết học đã được lưu thành công!', 'success');
             };
 
+            // Export iCal
             document.getElementById('exportIcalBtn').onclick = exportToICal;
 
+            // Load initial state from browser storage or default sample
             const initialHtml = loadFromStorage();
-            loadHTMLContent(initialHtml);
+            loadHTMLContent(initialHtml, false);
         });
     </script>
 </body>
