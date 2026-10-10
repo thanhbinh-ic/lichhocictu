@@ -12,22 +12,22 @@
 
 ## Tính năng nổi bật
 
-- ** Nhập lịch học đa dạng:**
+- Nhập lịch học đa dạng:
   - **Dán mã HTML:** Copy trực tiếp toàn bộ nguồn trang HTML chứa bảng lịch học từ portal sinh viên và dán vào ứng dụng.
   - **Tải tệp tin (.txt / .html):** Hỗ trợ chọn và đọc trực tiếp file lưu lịch học từ bộ nhớ thiết bị.
-- ** Hiển thị trực quan linh hoạt:**
+- Hiển thị trực quan linh hoạt:
   - **Thanh cuộn 7 ngày (Ribbon View):** Xem nhanh danh sách các ngày trong tuần hiện tại kèm chấm báo hiệu ngày có lịch học.
   - **Lịch tháng mở rộng (Accordion Calendar):** Lịch tháng tích hợp ngay trên thanh header, giúp chuyển đổi và chọn ngày nhanh chóng.
   - **Lọc theo ngày/tuần:** Dễ dàng lọc môn học theo ngày được chọn hoặc xem toàn bộ môn học trong tuần.
-- ** Tùy chỉnh giờ tiết học:**
+- Tùy chỉnh giờ tiết học:
   - Cho phép cấu hình chi tiết khung giờ bắt đầu/kết thúc của từng tiết học.
   - Tích hợp sẵn mẫu **Giờ mùa hè** và **Giờ mùa đông**.
   - Kiểm tra và cảnh báo logic thời gian thông minh (tránh đè chồng khung giờ).
-- ** Giao diện & Trải nghiệm (UX/UI):**
+- Giao diện & Trải nghiệm (UX/UI):
   - **3 chế độ giao diện:** Tự động (theo hệ thống) / Sáng (Light) / Tối (Dark Mode).
   - Tự động phân phối bảng màu phân biệt giữa các môn học.
   - Tương thích hoàn hảo với màn hình di động (iOS Safari & Android PWA support).
-- ** Đồng bộ & Lưu trữ:**
+- Đồng bộ & Lưu trữ:
   - Lưu dữ liệu lịch học và cấu hình thời gian tự động vào `localStorage` của trình duyệt, không lo mất dữ liệu khi làm mới trang.
 
 ---
