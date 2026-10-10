@@ -1,32 +1,32 @@
-# 📅 Lịch Học Thông Minh (Smart Schedule)
+# Lịch Học Thông Minh (Smart Schedule)
 
 **Lịch Học Thông Minh** là một ứng dụng web dạng PWA (Progressive Web App) gọn nhẹ, giao diện hiện đại, giúp sinh viên tra cứu, quản lý và theo dõi lịch học cá nhân một cách trực quan. Ứng dụng hỗ trợ trích xuất dữ liệu tự động từ cổng thông tin đào tạo sinh viên (đặc biệt tối ưu cho hệ thống `sinhvien.ictu.edu.vn`).
 
 ---
 
-## ✨ Tính năng nổi bật
+## Tính năng nổi bật
 
-- **📥 Nhập lịch học đa dạng:**
+- ** Nhập lịch học đa dạng:**
   - **Dán mã HTML:** Copy trực tiếp toàn bộ nguồn trang HTML chứa bảng lịch học từ portal sinh viên và dán vào ứng dụng.
   - **Tải tệp tin (.txt / .html):** Hỗ trợ chọn và đọc trực tiếp file lưu lịch học từ bộ nhớ thiết bị.
-- **📆 Hiển thị trực quan linh hoạt:**
+- ** Hiển thị trực quan linh hoạt:**
   - **Thanh cuộn 7 ngày (Ribbon View):** Xem nhanh danh sách các ngày trong tuần hiện tại kèm chấm báo hiệu ngày có lịch học.
   - **Lịch tháng mở rộng (Accordion Calendar):** Lịch tháng tích hợp ngay trên thanh header, giúp chuyển đổi và chọn ngày nhanh chóng.
   - **Lọc theo ngày/tuần:** Dễ dàng lọc môn học theo ngày được chọn hoặc xem toàn bộ môn học trong tuần.
-- **⏰ Tùy chỉnh giờ tiết học:**
+- ** Tùy chỉnh giờ tiết học:**
   - Cho phép cấu hình chi tiết khung giờ bắt đầu/kết thúc của từng tiết học.
   - Tích hợp sẵn mẫu **Giờ mùa hè** và **Giờ mùa đông**.
   - Kiểm tra và cảnh báo logic thời gian thông minh (tránh đè chồng khung giờ).
-- **🎨 Giao diện & Trải nghiệm (UX/UI):**
+- ** Giao diện & Trải nghiệm (UX/UI):**
   - **3 chế độ giao diện:** Tự động (theo hệ thống) / Sáng (Light) / Tối (Dark Mode).
   - Tự động phân phối bảng màu phân biệt giữa các môn học.
   - Tương thích hoàn hảo với màn hình di động (iOS Safari & Android PWA support).
-- **💾 Đồng bộ & Lưu trữ:**
+- ** Đồng bộ & Lưu trữ:**
   - Lưu dữ liệu lịch học và cấu hình thời gian tự động vào `localStorage` của trình duyệt, không lo mất dữ liệu khi làm mới trang.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 - **HTML5 & CSS3**: Cấu trúc ứng dụng và định dạng chuẩn Responsive.
 - **Tailwind CSS (CDN)**: Framework CSS Utility-first cho giao diện hiện đại, tối ưu Dark Mode.
@@ -36,7 +36,7 @@
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & Sử dụng
+## Hướng dẫn cài đặt & Sử dụng
 
 ### 1. Sử dụng trực tiếp
 Ứng dụng hoàn toàn chạy ở phía Client (Trình duyệt), không cần backend.
@@ -52,13 +52,13 @@
 
 ---
 
-## ⚙️ Cấu hình tùy chọn
+## Cấu hình tùy chọn
 
 - **Chuyển đổi Chế độ Tối/Sáng:** Nhấn vào biểu tượng nửa hình tròn trên thanh Header để luân chuyển giữa các chế độ `Tự động System` $\rightarrow$ `Giao diện Sáng` $\rightarrow$ `Giao diện Tối`.
 - **Cài đặt giờ tiết học:** Nhấn vào biểu tượng bộ lọc (Sliders) trên Header để điều chỉnh giờ từng tiết hoặc áp dụng nhanh mẫu giờ Mùa hè / Mùa đông.
 
 ---
 
-## 📝 Giấy phép (License)
+## Giấy phép (License)
 
 Dự án được phát triển nhằm mục đích phi thương mại, hỗ trợ cộng đồng sinh viên. Bạn có thể tự do chỉnh sửa và tùy biến mã nguồn theo nhu cầu cá nhân.
