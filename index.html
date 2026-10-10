@@ -1190,13 +1190,19 @@
             const donateModal = document.getElementById('donateModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
 
-            // Tự động chọn (select) toàn bộ nội dung trong ô nhập HTML khi người dùng focus hoặc click vào
-            htmlInputArea.onfocus = function() {
-                this.select();
-            };
-            htmlInputArea.onclick = function() {
-                this.select();
-            };
+            // Hàm tự động Focus & Select chuẩn tương thích mobile iOS Safari & Android
+            function selectAllInputContent() {
+                htmlInputArea.focus();
+                if (htmlInputArea.setSelectionRange) {
+                    htmlInputArea.setSelectionRange(0, htmlInputArea.value.length);
+                } else {
+                    htmlInputArea.select();
+                }
+            }
+
+            // Tự động bôi đen khi người dùng chạm/chạm lần nữa vào khung nhập
+            htmlInputArea.onfocus = selectAllInputContent;
+            htmlInputArea.onclick = selectAllInputContent;
 
             // Xử lý chuyển đổi qua lại giữa 3 chế độ Theme: Auto -> Light -> Dark -> Auto
             document.getElementById('themeToggleBtn').onclick = () => {
@@ -1240,14 +1246,16 @@
                 goToToday();
             };
 
-            // Open Import Modal & Auto Select Text Box
+            // Open Import Modal, ép mở bàn phím nhập liệu & bôi đen đồng bộ ngay khi bấm nút
             document.getElementById('openImportBtn').onclick = () => {
                 htmlInputArea.value = appState.rawHtml || '';
                 importModal.classList.remove('hidden');
-                setTimeout(() => {
-                    htmlInputArea.focus();
-                    htmlInputArea.select();
-                }, 30);
+
+                // Kích hoạt bàn phím ảo & bôi đen đồng bộ ngay lập tức để iOS/Android nhận diện Gesture
+                selectAllInputContent();
+
+                // Chạy thêm 1 lần delay ngắn phòng trường hợp animation render modal làm mất focus
+                setTimeout(selectAllInputContent, 80);
             };
 
             document.getElementById('closeImportModal').onclick = () => importModal.classList.add('hidden');
