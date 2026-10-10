@@ -8,7 +8,7 @@
     <!-- Favicon cho Trình duyệt máy tính/Android -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2300897b' d='M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H128C92.65 512 64 483.3 64 448V128C64 92.65 92.65 64 128 64H168V24C168 10.75 178.7 0 192 0C205.3 0 216 10.75 216 24V64H152zM112 192V448C112 456.8 119.2 464 128 464H384C392.8 464 400 456.8 400 448V192H112z'/><circle cx='350' cy='350' r='100' fill='%2300897b'/><path fill='%23ffffff' d='M334 388l-30-30-14 14 44 44 70-70-14-14z'/></svg>">
     
-    <!-- Biểu tượng khi "Thêm vào Màn hình chính" trên iPhone / iOS Safari (Apple Touch Icon Base64 SVG/PNG) -->
+    <!-- Biểu tượng khi "Thêm vào Màn hình chính" trên iPhone / iOS Safari -->
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     
     <!-- PWA / iOS Web App Meta Tags -->
@@ -234,17 +234,12 @@
             <textarea id="htmlInputArea" rows="9" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 text-gray-700"></textarea>
 
             <div class="mt-4 flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
-                <button id="loadSampleBtn" class="px-3 py-2 text-xs text-brand-600 font-semibold hover:bg-brand-50 rounded-lg transition">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Dùng lịch mẫu
+                <a href="https://github.com/nongthanhbinh/lich-hoc-ictu" target="_blank" class="px-3 py-2 text-xs text-brand-600 font-semibold hover:bg-brand-50 rounded-lg transition inline-flex items-center">
+                    <i class="fa-solid fa-circle-question mr-1.5"></i> Hướng dẫn
+                </a>
+                <button id="processHtmlBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
+                    <i class="fa-solid fa-circle-check mr-1"></i> Trích xuất & Hiển thị
                 </button>
-                <div class="flex gap-2">
-                    <button id="cancelImportBtn" class="px-3 py-2 text-xs font-semibold text-gray-500 hover:bg-gray-100 rounded-lg">
-                        Hủy
-                    </button>
-                    <button id="processHtmlBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
-                        <i class="fa-solid fa-circle-check mr-1"></i> Trích xuất & Hiển thị
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -286,10 +281,6 @@
     <!-- Donate Modal -->
     <div id="donateModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto relative border border-emerald-100">
-            <button id="closeDonateModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px] flex items-center justify-center">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
             <div class="flex flex-col items-center text-center">
                 <div class="bg-emerald-50 text-brand-500 p-4 rounded-full mb-3 flex items-center justify-center w-16 h-16">
                     <i class="fa-solid fa-heart text-3xl text-rose-500"></i>
@@ -1238,12 +1229,6 @@
             };
 
             document.getElementById('closeImportModal').onclick = () => importModal.classList.add('hidden');
-            document.getElementById('cancelImportBtn').onclick = () => importModal.classList.add('hidden');
-
-            // Load sample table button
-            document.getElementById('loadSampleBtn').onclick = () => {
-                htmlInputArea.value = SAMPLE_HTML_TABLE;
-            };
 
             // Process HTML button
             document.getElementById('processHtmlBtn').onclick = () => {
@@ -1295,7 +1280,6 @@
 
             // Donate Modal Handlers
             document.getElementById('openDonateBtn').onclick = () => donateModal.classList.remove('hidden');
-            document.getElementById('closeDonateModal').onclick = () => donateModal.classList.add('hidden');
             document.getElementById('confirmCloseDonateBtn').onclick = () => donateModal.classList.add('hidden');
 
             // Copy Bank Account Number
