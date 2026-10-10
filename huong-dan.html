@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -46,7 +47,6 @@
         }
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f3f4f6;
             -webkit-font-smoothing: antialiased;
         }
         .card-shadow {
@@ -60,10 +60,10 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-full flex flex-col justify-between select-none relative">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-full flex flex-col justify-between select-none relative transition-colors duration-200">
 
     <!-- Header Đồng Bộ Trang Chủ -->
-    <header class="bg-[#00897b] text-white sticky top-0 z-40 shadow-md pt-safe">
+    <header class="bg-[#00897b] dark:bg-[#004d40] text-white sticky top-0 z-40 shadow-md pt-safe transition-colors duration-200">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
                 <a href="index.html" class="w-8 h-8 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm hover:bg-white/25 active:scale-95 transition">
@@ -84,25 +84,25 @@
     <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-6 pb-12">
 
         <!-- Phần 1: Hướng dẫn lấy mã HTML Lịch Học -->
-        <section class="bg-white rounded-2xl p-4 card-shadow border border-gray-100 space-y-4">
-            <div class="flex items-center space-x-2.5 border-b border-gray-100 pb-3">
-                <div class="w-8 h-8 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold text-sm">
+        <section class="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow border border-gray-100 dark:border-gray-700 space-y-4 transition-colors duration-200">
+            <div class="flex items-center space-x-2.5 border-b border-gray-100 dark:border-gray-700 pb-3">
+                <div class="w-8 h-8 bg-brand-50 dark:bg-emerald-950/60 text-brand-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold text-sm">
                     1
                 </div>
                 <div>
-                    <h2 class="text-sm font-bold text-gray-800">CÁCH NHẬP LỊCH HỌC VÀO ƯNG DỤNG</h2>
-                    <p class="text-[11px] text-gray-400">Thực hiện theo các bước chi tiết bên dưới</p>
+                    <h2 class="text-sm font-bold text-gray-800 dark:text-gray-100">CÁCH NHẬP LỊCH HỌC VÀO ỨNG DỤNG</h2>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-400">Thực hiện theo các bước chi tiết bên dưới</p>
                 </div>
             </div>
 
-            <div class="space-y-4 text-xs text-gray-700 leading-relaxed">
+            <div class="space-y-4 text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                 <!-- Bước 1 -->
                 <div class="space-y-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Đăng nhập vào trang <code class="bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200 font-mono">sinhvien.ictu.edu.vn</code> trên máy tính:</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Đăng nhập vào trang <code class="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 font-mono">sinhvien.ictu.edu.vn</code> trên máy tính:</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900">
                         <img src="img/img01.png" alt="Đăng nhập trang sinh viên" class="w-full object-cover">
                     </div>
                 </div>
@@ -110,10 +110,10 @@
                 <!-- Bước 2 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Vào menu <strong class="text-gray-900">"Thông tin cá nhân"</strong> → chọn <strong class="text-gray-900">"Thông tin lịch học"</strong>:</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Vào menu <strong class="text-gray-900 dark:text-white">"Thông tin cá nhân"</strong> → chọn <strong class="text-gray-900 dark:text-white">"Thông tin lịch học"</strong>:</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900">
                         <img src="img/img02.png" alt="Vào thông tin lịch học" class="w-full object-cover">
                     </div>
                 </div>
@@ -121,10 +121,10 @@
                 <!-- Bước 3 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Trên bàn phím máy tính ấn phím <kbd class="bg-gray-100 text-gray-800 px-2 py-0.5 rounded shadow-sm border border-gray-300 font-mono font-bold">F12</kbd> để mở công cụ DevTools. Một bảng hiện ra, chuyển sang tab <strong class="text-gray-900">"Elements"</strong>:</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Trên bàn phím máy tính ấn phím <kbd class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-0.5 rounded shadow-sm border border-gray-300 dark:border-gray-600 font-mono font-bold">F12</kbd> để mở công cụ DevTools. Một bảng hiện ra, chuyển sang tab <strong class="text-gray-900 dark:text-white">"Elements"</strong>:</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900">
                         <img src="img/img03.png" alt="Mở DevTools F12" class="w-full object-cover">
                     </div>
                 </div>
@@ -132,10 +132,10 @@
                 <!-- Bước 4 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Ấn chuột phải chọn sao chép (hoặc nhấn phím tắt <kbd class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded shadow-sm border border-gray-300 font-mono font-bold">Ctrl + C</kbd>):</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Ấn chuột phải chọn sao chép (hoặc nhấn phím tắt <kbd class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded shadow-sm border border-gray-300 dark:border-gray-600 font-mono font-bold">Ctrl + C</kbd>):</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900">
                         <img src="img/img04.png" alt="Sao chép thẻ HTML" class="w-full object-cover">
                     </div>
                 </div>
@@ -143,16 +143,16 @@
                 <!-- Bước 5 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Quay lại web <strong class="text-brand-600">Lịch Học Thông Minh</strong>, dán nội dung vừa sao chép vào khung nhập sau đó ấn <strong class="text-brand-600">"Trích xuất & Hiển thị"</strong>:</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Quay lại web <strong class="text-brand-600 dark:text-emerald-400">Lịch Học Thông Minh</strong>, dán nội dung vừa sao chép vào khung nhập sau đó ấn <strong class="text-brand-600 dark:text-emerald-400">"Trích xuất & Hiển thị"</strong>:</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900">
                         <img src="img/img05.png" alt="Dán vào Lịch học thông minh" class="w-full object-cover">
                     </div>
                 </div>
 
                 <!-- Note P/s -->
-                <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-rose-800 text-[11px] leading-relaxed flex items-start gap-2 mt-3">
+                <div class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-xl p-3 text-rose-800 dark:text-rose-300 text-[11px] leading-relaxed flex items-start gap-2 mt-3">
                     <i class="fa-solid fa-heart text-rose-500 text-sm mt-0.5"></i>
                     <div>
                         <strong>P/s:</strong> Muốn xem lịch học trên điện thoại thì bạn hãy chuyển nội dung vừa sao chép sang điện thoại (qua Zalo/Messenger/Note) rồi dán vào nhé! &lt;3
@@ -162,29 +162,29 @@
         </section>
 
         <!-- Phần 2: Hướng dẫn cài App trên iPhone -->
-        <section class="bg-white rounded-2xl p-4 card-shadow border border-gray-100 space-y-4">
-            <div class="flex items-center space-x-2.5 border-b border-gray-100 pb-3">
-                <div class="w-8 h-8 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold text-sm">
+        <section class="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow border border-gray-100 dark:border-gray-700 space-y-4 transition-colors duration-200">
+            <div class="flex items-center space-x-2.5 border-b border-gray-100 dark:border-gray-700 pb-3">
+                <div class="w-8 h-8 bg-brand-50 dark:bg-emerald-950/60 text-brand-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold text-sm">
                     2
                 </div>
                 <div>
-                    <h2 class="text-sm font-bold text-gray-800">THÊM ỨNG DỤNG VÀO MÀN HÌNH CHÍNH (IPHONE)</h2>
-                    <p class="text-[11px] text-gray-400">Trải nghiệm như ứng dụng iOS thật</p>
+                    <h2 class="text-sm font-bold text-gray-800 dark:text-gray-100">THÊM ỨNG DỤNG VÀO MÀN HÌNH CHÍNH (IPHONE)</h2>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-400">Trải nghiệm như ứng dụng iOS thật</p>
                 </div>
             </div>
 
-            <p class="text-xs text-gray-600 leading-relaxed">
-                Trên điện thoại iPhone, bạn có thể cài <strong class="text-brand-600">Lịch Học Thông Minh</strong> thành một ứng dụng trên màn hình chính:
+            <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                Trên điện thoại iPhone, bạn có thể cài <strong class="text-brand-600 dark:text-emerald-400">Lịch Học Thông Minh</strong> thành một ứng dụng trên màn hình chính:
             </p>
 
-            <div class="space-y-4 text-xs text-gray-700 leading-relaxed">
+            <div class="space-y-4 text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                 <!-- iOS Bước 1 -->
                 <div class="space-y-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Truy cập vào <code class="bg-emerald-50 text-brand-700 px-1.5 py-0.5 rounded border border-emerald-200 font-mono">lichhocictu.vercel.app</code> bằng trình duyệt <strong class="text-gray-900">Safari</strong>:</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Truy cập vào <code class="bg-emerald-50 dark:bg-emerald-950/50 text-brand-700 dark:text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 font-mono">lichhocictu.vercel.app</code> bằng trình duyệt <strong class="text-gray-900 dark:text-white">Safari</strong>:</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50 max-w-xs mx-auto">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900 max-w-xs mx-auto">
                         <img src="img/img06.jpg" alt="Truy cập Safari" class="w-full object-cover">
                     </div>
                 </div>
@@ -192,10 +192,10 @@
                 <!-- iOS Bước 2 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Ấn nút <strong class="text-gray-900">"Chia sẻ"</strong> (biểu tượng hình vuông có mũi tên chỉ lên ở thanh công cụ dưới cùng):</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Ấn nút <strong class="text-gray-900 dark:text-white">"Chia sẻ"</strong> (biểu tượng hình vuông có mũi tên chỉ lên ở thanh công cụ dưới cùng):</span>
                     </p>
-                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50 max-w-xs mx-auto">
+                    <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-900 max-w-xs mx-auto">
                         <img src="img/img07.jpg" alt="Ấn nút Chia sẻ Safari" class="w-full object-cover">
                     </div>
                 </div>
@@ -203,8 +203,8 @@
                 <!-- iOS Bước 3 -->
                 <div class="space-y-2 pt-2">
                     <p class="font-medium flex items-start gap-1.5">
-                        <span class="text-brand-600 font-bold">•</span>
-                        <span>Cuộn xuống và chọn <strong class="text-gray-900">"Thêm vào Màn hình chính"</strong> (Add to Home Screen).</span>
+                        <span class="text-brand-600 dark:text-emerald-400 font-bold">•</span>
+                        <span>Cuộn xuống và chọn <strong class="text-gray-900 dark:text-white">"Thêm vào Màn hình chính"</strong> (Add to Home Screen).</span>
                     </p>
                 </div>
             </div>
@@ -220,9 +220,30 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-[11px] text-gray-400 border-t border-gray-200 bg-white">
+    <footer class="text-center py-4 text-[11px] text-gray-400 dark:text-gray-500 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-200">
         <p>Lịch Học Thông Minh &copy; 2026 ICTU</p>
     </footer>
 
+    <!-- Script Đồng Bộ Theme với trang chủ index.html -->
+    <script>
+        const STORAGE_KEY_THEME = 'app_theme_mode';
+
+        function syncTheme() {
+            const mode = localStorage.getItem(STORAGE_KEY_THEME) || 'auto'; // 'auto', 'light', 'dark'
+            const isDarkPreferred = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (mode === 'dark' || (mode === 'auto' && isDarkPreferred)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        // Thực hiện áp dụng theme ngay khi tải trang
+        syncTheme();
+
+        // Lắng nghe sự thay đổi theme hệ thống khi người dùng chọn chế độ 'auto'
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme);
+    </script>
 </body>
 </html>
