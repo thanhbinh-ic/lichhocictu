@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -46,7 +47,6 @@
         }
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f3f4f6;
             -webkit-font-smoothing: antialiased;
             overscroll-behavior-y: none;
         }
@@ -74,12 +74,12 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-full flex flex-col justify-between select-none relative">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-full flex flex-col justify-between select-none relative transition-colors duration-200">
 
-    <!-- Toast Notification Container (z-[9999] đảm bảo luôn ở trên cùng) -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
+    <!-- Toast Notification Container (Dưới cùng, chính giữa màn hình) -->
+    <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-2 max-w-xs w-full px-4 pointer-events-none"></div>
 
-    <header class="bg-[#00897b] text-white sticky top-0 z-40 shadow-md pt-safe">
+    <header class="bg-[#00897b] dark:bg-[#004d40] text-white sticky top-0 z-40 shadow-md pt-safe transition-colors duration-200">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
                 <div class="w-8 h-8 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -97,8 +97,9 @@
                 <button id="openSettingsBtn" title="Cấu hình tiết học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
                     <i class="fa-solid fa-sliders text-lg"></i>
                 </button>
-                <button id="exportIcalBtn" title="Xuất lịch ra Google/Apple Calendar (.ics)" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
-                    <i class="fa-solid fa-file-export text-lg"></i>
+                <!-- Nút chuyển đổi Light / Dark / Auto Mode 3 chế độ -->
+                <button id="themeToggleBtn" title="Chế độ giao diện" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i id="themeToggleIcon" class="fa-solid fa-circle-half-stroke text-lg"></i>
                 </button>
                 <button id="openDonateBtn" title="Ủng hộ tác giả" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-rose-200 hover:text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
                     <i class="fa-solid fa-heart text-lg text-rose-300"></i>
@@ -106,19 +107,19 @@
             </div>
         </div>
 
-        <div id="gestureHeaderZone" class="bg-white text-gray-700 border-b border-gray-200 shadow-sm relative">
+        <div id="gestureHeaderZone" class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 shadow-sm relative transition-colors duration-200">
             <!-- Week Selector Header -->
-            <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between border-b border-gray-100 text-xs">
-                <button id="prevWeekBtn" class="p-1.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-gray-600 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
+            <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-700/60 text-xs">
+                <button id="prevWeekBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
                 <div class="flex items-center space-x-2">
-                    <i class="fa-regular fa-clock text-brand-500"></i>
-                    <select id="weekSelect" class="bg-transparent font-bold text-gray-800 focus:outline-none cursor-pointer text-xs sm:text-sm">
+                    <i class="fa-regular fa-clock text-brand-500 dark:text-emerald-400"></i>
+                    <select id="weekSelect" class="bg-transparent font-bold text-gray-800 dark:text-gray-100 focus:outline-none cursor-pointer text-xs sm:text-sm">
                         <!-- Filled dynamically -->
                     </select>
                 </div>
-                <button id="nextWeekBtn" class="p-1.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-gray-600 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
+                <button id="nextWeekBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-300 transition min-w-[36px] min-h-[36px] flex items-center justify-center">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
@@ -131,25 +132,25 @@
             </div>
 
             <!-- Month Calendar Expandable Dropdown Container -->
-            <div id="monthCalendarContainer" class="max-w-md mx-auto px-3 overflow-hidden max-h-0 opacity-0 bg-gray-50 border-t border-gray-100">
+            <div id="monthCalendarContainer" class="max-w-md mx-auto px-3 overflow-hidden max-h-0 opacity-0 bg-gray-50 dark:bg-gray-800/80 border-t border-gray-100 dark:border-gray-700">
                 <div class="py-3">
                     <!-- Month Header Controls -->
                     <div class="flex items-center justify-between mb-2.5 px-1">
-                        <button id="prevMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
+                        <button id="prevMonthBtn" class="p-1 text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-emerald-400 rounded-md">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
                         <div class="flex items-center space-x-2">
-                            <span id="monthYearLabel" class="text-xs font-bold text-gray-800 tracking-wide">
+                            <span id="monthYearLabel" class="text-xs font-bold text-gray-800 dark:text-gray-200 tracking-wide">
                                 Tháng --/----
                             </span>
                         </div>
-                        <button id="nextMonthBtn" class="p-1 text-gray-500 hover:text-brand-600 rounded-md">
+                        <button id="nextMonthBtn" class="p-1 text-gray-500 dark:text-gray-400 hover:text-brand-600 dark:hover:text-emerald-400 rounded-md">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
 
                     <!-- Month Grid Headers -->
-                    <div class="grid grid-cols-7 text-center text-[10px] font-bold text-gray-400 mb-1">
+                    <div class="grid grid-cols-7 text-center text-[10px] font-bold text-gray-400 dark:text-gray-500 mb-1">
                         <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
                     </div>
 
@@ -159,7 +160,7 @@
                     </div>
 
                     <!-- Legend indicators -->
-                    <div class="flex items-center justify-center space-x-4 mt-3 text-[10px] text-gray-500 border-t border-gray-200/60 pt-2">
+                    <div class="flex items-center justify-center space-x-4 mt-3 text-[10px] text-gray-500 dark:text-gray-400 border-t border-gray-200/60 dark:border-gray-700/60 pt-2">
                         <div class="flex items-center space-x-1">
                             <span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span>
                             <span>Hôm nay</span>
@@ -176,7 +177,7 @@
             </div>
 
             <!-- Toggle Month Button -->
-            <button id="toggleMonthBtn" class="w-full py-2 flex items-center justify-center text-[11px] text-gray-600 font-semibold hover:text-brand-600 transition bg-gray-50/90 active:bg-gray-100 border-t border-gray-100">
+            <button id="toggleMonthBtn" class="w-full py-2 flex items-center justify-center text-[11px] text-gray-600 dark:text-gray-300 font-semibold hover:text-brand-600 dark:hover:text-emerald-400 transition bg-gray-50/90 dark:bg-gray-800/90 active:bg-gray-100 dark:active:bg-gray-700 border-t border-gray-100 dark:border-gray-700">
                 <span id="monthToggleText">Mở lịch tháng</span>
                 <i id="monthToggleIcon" class="fa-solid fa-chevron-down ml-1.5 text-[10px]"></i>
             </button>
@@ -187,11 +188,11 @@
     <main id="mainSwipeArea" class="flex-1 max-w-md w-full mx-auto p-3 space-y-3.5 pb-20">
 
         <!-- Active Filter Bar -->
-        <div class="flex items-center justify-between text-xs text-gray-500 px-1 pt-0.5">
-            <span id="activeFilterBadge" class="font-medium bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-[11px]">
+        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1 pt-0.5">
+            <span id="activeFilterBadge" class="font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 rounded-full text-[11px]">
                 Hiển thị: Tất cả các ngày
             </span>
-            <button id="resetFilterBtn" class="text-brand-600 hover:underline font-semibold text-[11px] hidden">
+            <button id="resetFilterBtn" class="text-brand-600 dark:text-emerald-400 hover:underline font-semibold text-[11px] hidden">
                 Xem tất cả
             </button>
         </div>
@@ -202,12 +203,12 @@
         </div>
 
         <!-- Empty State View -->
-        <div id="emptyState" class="hidden text-center py-12 px-4 bg-white rounded-2xl shadow-sm border border-gray-100 my-4">
-            <div class="w-16 h-16 bg-emerald-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div id="emptyState" class="hidden text-center py-12 px-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 my-4 transition-colors duration-200">
+            <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/50 text-brand-500 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3">
                 <i class="fa-regular fa-calendar-xmark text-2xl"></i>
             </div>
-            <h3 class="text-base font-bold text-gray-700">Không có lịch học</h3>
-            <p class="text-xs text-gray-400 mt-1 max-w-xs mx-auto">
+            <h3 class="text-base font-bold text-gray-700 dark:text-gray-200">Không có lịch học</h3>
+            <p class="text-xs text-gray-400 dark:text-gray-400 mt-1 max-w-xs mx-auto">
                 Không có môn học nào trong ngày hoặc tuần bạn chọn.
             </p>
             <button onclick="document.getElementById('openImportBtn').click()" class="mt-4 px-4 py-2.5 bg-brand-500 text-white text-xs font-bold rounded-xl shadow-md hover:bg-brand-600 active:scale-95 transition">
@@ -218,23 +219,23 @@
 
     <!-- HTML Input Modal -->
     <div id="importModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full p-5 shadow-2xl flex flex-col max-h-[90vh] transition-colors duration-200 border border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-code text-brand-500 text-lg"></i>
-                    <h2 class="text-base font-bold text-gray-800">Dán HTML Bảng Lịch Học</h2>
+                    <i class="fa-solid fa-code text-brand-500 dark:text-emerald-400 text-lg"></i>
+                    <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Dán HTML Bảng Lịch Học</h2>
                 </div>
-                <button id="closeImportModal" class="text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px]">
+                <button id="closeImportModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 min-w-[36px] min-h-[36px]">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-xs text-gray-500 my-2">
-                Copy toàn bộ thẻ <code class="bg-gray-100 text-red-500 px-1 py-0.5 rounded">&lt;html&gt;...&lt;/html&gt;</code> từ cổng thông tin đào tạo <code class="bg-gray-100 text-red-500 px-1 py-0.5 rounded">sinhvien.ictu.edu.vn/TraCuuLichHoc/Index</code> và dán vào bên dưới:
+            <p class="text-xs text-gray-500 dark:text-gray-400 my-2">
+                Copy toàn bộ thẻ <code class="bg-gray-100 dark:bg-gray-700 text-red-500 dark:text-rose-400 px-1 py-0.5 rounded">&lt;html&gt;...&lt;/html&gt;</code> từ cổng thông tin đào tạo <code class="bg-gray-100 dark:bg-gray-700 text-red-500 dark:text-rose-400 px-1 py-0.5 rounded">sinhvien.ictu.edu.vn/TraCuuLichHoc/Index</code> và dán vào bên dưới:
             </p>
-            <textarea id="htmlInputArea" rows="9" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 text-gray-700"></textarea>
+            <textarea id="htmlInputArea" rows="9" placeholder='<table class="table ..."> ... </table>' class="w-full text-xs font-mono p-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-200"></textarea>
 
-            <div class="mt-4 flex items-center justify-between gap-2 pt-2 border-t border-gray-100">
-                <a href="huong-dan" target="_blank" class="px-3 py-2 text-xs text-brand-600 font-semibold hover:bg-brand-50 rounded-lg transition inline-flex items-center">
+            <div class="mt-4 flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <a href="huong-dan" target="_blank" class="px-3 py-2 text-xs text-brand-600 dark:text-emerald-400 font-semibold hover:bg-brand-50 dark:hover:bg-gray-700 rounded-lg transition inline-flex items-center">
                     <i class="fa-solid fa-circle-question mr-1.5"></i> Hướng dẫn
                 </a>
                 <button id="processHtmlBtn" class="px-4 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
@@ -246,28 +247,28 @@
 
     <!-- Lesson Time Mapping Settings Modal -->
     <div id="settingsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl flex flex-col max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-5 shadow-2xl flex flex-col max-h-[85vh] overflow-y-auto transition-colors duration-200 border border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-100 dark:border-gray-700">
                 <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-clock text-brand-500 text-lg"></i>
-                    <h2 class="text-base font-bold text-gray-800">Cấu hình Giờ Tiết Học</h2>
+                    <i class="fa-solid fa-clock text-brand-500 dark:text-emerald-400 text-lg"></i>
+                    <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Cấu hình Giờ Tiết Học</h2>
                 </div>
-                <button id="closeSettingsModal" class="text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px]">
+                <button id="closeSettingsModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 min-w-[36px] min-h-[36px]">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-xs text-gray-500 my-2">Điều chỉnh khung giờ tương ứng với từng tiết học trong trường của bạn:</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 my-2">Điều chỉnh khung giờ tương ứng với từng tiết học trong trường của bạn:</p>
 
             <div id="periodSettingsList" class="space-y-2 my-2">
                 <!-- Period inputs generated here -->
             </div>
 
-            <div class="mt-4 flex justify-between items-center pt-3 border-t border-gray-100 gap-1.5">
+            <div class="mt-4 flex justify-between items-center pt-3 border-t border-gray-100 dark:border-gray-700 gap-1.5">
                 <div class="flex items-center gap-1.5">
-                    <button id="summerTimeBtn" class="px-2.5 py-1.5 text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition">
+                    <button id="summerTimeBtn" class="px-2.5 py-1.5 text-[11px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 border border-amber-200 dark:border-amber-800 rounded-lg transition">
                         <i class="fa-solid fa-sun text-amber-500 mr-1"></i>Giờ mùa hè
                     </button>
-                    <button id="winterTimeBtn" class="px-2.5 py-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition">
+                    <button id="winterTimeBtn" class="px-2.5 py-1.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 border border-blue-200 dark:border-blue-800 rounded-lg transition">
                         <i class="fa-solid fa-snowflake text-blue-500 mr-1"></i>Giờ mùa đông
                     </button>
                 </div>
@@ -280,15 +281,15 @@
 
     <!-- Donate Modal -->
     <div id="donateModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto relative border border-emerald-100">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto relative border border-emerald-100 dark:border-gray-700 transition-colors duration-200">
             <div class="flex flex-col items-center text-center">
-                <div class="bg-emerald-50 text-brand-500 p-4 rounded-full mb-3 flex items-center justify-center w-16 h-16">
+                <div class="bg-emerald-50 dark:bg-emerald-950/50 text-brand-500 p-4 rounded-full mb-3 flex items-center justify-center w-16 h-16">
                     <i class="fa-solid fa-heart text-3xl text-rose-500"></i>
                 </div>
                 
-                <h3 class="text-xl font-bold text-gray-800 mb-1">Ủng Hộ Tác Giả</h3>
-                <p class="text-gray-500 mb-5 text-xs max-w-xs leading-relaxed">
-                    Sự đóng góp của bạn giúp mình duy trì và tiếp tục phát triển ứng dụng <span class="font-bold text-brand-600">Lịch Học Thông Minh</span>!
+                <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">Ủng Hộ Tác Giả</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-5 text-xs max-w-xs leading-relaxed">
+                    Sự đóng góp của bạn giúp mình duy trì và tiếp tục phát triển ứng dụng <span class="font-bold text-brand-600 dark:text-emerald-400">Lịch Học Thông Minh</span>!
                 </p>
                 
                 <div class="bg-white p-3 rounded-2xl mb-5 border border-gray-100 shadow-md transform transition-transform hover:scale-105">
@@ -296,23 +297,23 @@
                     <p class="text-[10px] text-brand-600 mt-2 font-bold uppercase tracking-wide">Quét mã để chuyển khoản nhanh</p>
                 </div>
                 
-                <div class="w-full space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200/80 text-left">
+                <div class="w-full space-y-3 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200/80 dark:border-gray-700 text-left">
                     <div>
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ngân hàng</label>
-                        <p class="text-gray-800 text-sm font-bold">BIDV</p>
+                        <p class="text-gray-800 dark:text-gray-200 text-sm font-bold">BIDV</p>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Số tài khoản</label>
-                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200 mt-0.5 shadow-sm">
-                            <p id="bankAccountNumber" class="text-brand-600 text-base font-mono font-bold tracking-wider ml-1">8847804617</p>
-                            <button id="copyAccountBtn" class="p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-brand-600 flex items-center justify-center" title="Sao chép số tài khoản">
+                        <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-2 rounded-lg border border-gray-200 dark:border-gray-700 mt-0.5 shadow-sm">
+                            <p id="bankAccountNumber" class="text-brand-600 dark:text-emerald-400 text-base font-mono font-bold tracking-wider ml-1">8847804617</p>
+                            <button id="copyAccountBtn" class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors text-gray-500 hover:text-brand-600 dark:hover:text-emerald-400 flex items-center justify-center" title="Sao chép số tài khoản">
                                 <i class="fa-regular fa-copy text-base"></i>
                             </button>
                         </div>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Chủ tài khoản</label>
-                        <p class="text-gray-800 font-bold uppercase text-xs">NONG THANH BINH</p>
+                        <p class="text-gray-800 dark:text-gray-200 font-bold uppercase text-xs">NONG THANH BINH</p>
                     </div>
                 </div>
                 
@@ -324,12 +325,50 @@
     </div>
 
     <script>
-        // Toast Notification System
+        // Theme System (Auto / Light / Dark)
+        const STORAGE_KEY_THEME = 'app_theme_mode';
+        let currentThemeMode = localStorage.getItem(STORAGE_KEY_THEME) || 'auto'; // 'auto', 'light', 'dark'
+
+        function applyTheme(mode) {
+            currentThemeMode = mode;
+            localStorage.setItem(STORAGE_KEY_THEME, mode);
+
+            const icon = document.getElementById('themeToggleIcon');
+            const isDarkPreferred = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (mode === 'dark' || (mode === 'auto' && isDarkPreferred)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            if (icon) {
+                if (mode === 'auto') {
+                    icon.className = 'fa-solid fa-circle-half-stroke text-lg';
+                    document.getElementById('themeToggleBtn').title = 'Chế độ: Tự động (Hệ thống)';
+                } else if (mode === 'light') {
+                    icon.className = 'fa-solid fa-sun text-lg text-amber-300';
+                    document.getElementById('themeToggleBtn').title = 'Chế độ: Giao diện sáng';
+                } else if (mode === 'dark') {
+                    icon.className = 'fa-solid fa-moon text-lg text-indigo-200';
+                    document.getElementById('themeToggleBtn').title = 'Chế độ: Giao diện tối';
+                }
+            }
+        }
+
+        // Lắng nghe thay đổi theme hệ thống khi đang ở chế độ auto
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (currentThemeMode === 'auto') {
+                applyTheme('auto');
+            }
+        });
+
+        // Toast Notification System (Hiển thị phía dưới, chính giữa màn hình)
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             
-            let bgClass = 'bg-gray-800 text-white';
+            let bgClass = 'bg-gray-800 dark:bg-gray-100 text-white dark:text-gray-900';
             let icon = 'fa-info-circle';
             
             if (type === 'success') {
@@ -340,17 +379,17 @@
                 icon = 'fa-circle-exclamation';
             }
 
-            toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-xs font-medium ${bgClass} transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto`;
+            toast.className = `flex items-center gap-2 px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium ${bgClass} transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-auto border border-white/10`;
             toast.innerHTML = `<i class="fa-solid ${icon} text-sm"></i> <span>${message}</span>`;
             
             container.appendChild(toast);
 
             setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
+                toast.classList.remove('translate-y-4', 'opacity-0');
             }, 10);
 
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
+                toast.classList.add('opacity-0', 'translate-y-4');
                 setTimeout(() => toast.remove(), 300);
             }, 3500);
         }
@@ -525,14 +564,14 @@
     </tbody>
 </table>`;
 
-        // Modern visual color palettes for course cards
+        // Modern visual color palettes for course cards (Dark mode enhanced)
         const COLOR_PALETTES = [
-            { bg: 'bg-[#f08a4b]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' },
-            { bg: 'bg-[#8e52a8]', text: 'text-white', lightBg: 'bg-purple-50', border: 'border-purple-200' },
-            { bg: 'bg-[#21b29a]', text: 'text-white', lightBg: 'bg-teal-50', border: 'border-teal-200' },
-            { bg: 'bg-[#4073d8]', text: 'text-white', lightBg: 'bg-blue-50', border: 'border-blue-200' },
-            { bg: 'bg-[#e05263]', text: 'text-white', lightBg: 'bg-rose-50', border: 'border-rose-200' },
-            { bg: 'bg-[#419b48]', text: 'text-white', lightBg: 'bg-emerald-50', border: 'border-emerald-200' },
+            { bg: 'bg-[#f08a4b] dark:bg-[#c8682a]', text: 'text-white', lightBg: 'bg-amber-50', border: 'border-amber-200' },
+            { bg: 'bg-[#8e52a8] dark:bg-[#6c3983]', text: 'text-white', lightBg: 'bg-purple-50', border: 'border-purple-200' },
+            { bg: 'bg-[#21b29a] dark:bg-[#168170]', text: 'text-white', lightBg: 'bg-teal-50', border: 'border-teal-200' },
+            { bg: 'bg-[#4073d8] dark:bg-[#2b54a8]', text: 'text-white', lightBg: 'bg-blue-50', border: 'border-blue-200' },
+            { bg: 'bg-[#e05263] dark:bg-[#b83444]', text: 'text-white', lightBg: 'bg-rose-50', border: 'border-rose-200' },
+            { bg: 'bg-[#419b48] dark:bg-[#2e7434]', text: 'text-white', lightBg: 'bg-emerald-50', border: 'border-emerald-200' },
         ];
 
         // Khung giờ Mùa Hè (Bắt đầu từ 15/04)
@@ -787,6 +826,7 @@
                 const opt = document.createElement('option');
                 opt.value = w.weekNum;
                 opt.textContent = `TUẦN: ${w.weekNum} (${w.startDateStr} đến ${w.endDateStr})`;
+                opt.className = 'dark:bg-gray-800 dark:text-gray-100';
                 if (w.weekNum === appState.selectedWeekNum) {
                     opt.selected = true;
                 }
@@ -822,7 +862,7 @@
                 dayEl.className = `flex flex-col items-center justify-center p-1.5 rounded-xl cursor-pointer transition ${
                     isSelected 
                         ? 'bg-brand-500 text-white shadow font-bold' 
-                        : 'hover:bg-gray-100 text-gray-700'
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-700/60 text-gray-700 dark:text-gray-300'
                 }`;
 
                 dayEl.onclick = () => {
@@ -838,7 +878,7 @@
                 if (isSelected) {
                     circleClass = 'bg-white text-brand-600 font-extrabold';
                 } else if (isToday) {
-                    circleClass = 'bg-orange-500 text-white font-bold ring-2 ring-orange-200';
+                    circleClass = 'bg-orange-500 text-white font-bold ring-2 ring-orange-200 dark:ring-orange-900';
                 }
 
                 dayEl.innerHTML = `
@@ -888,13 +928,13 @@
                 const isSelected = appState.selectedDateStr === cellDateStr;
 
                 const cell = document.createElement('div');
-                cell.className = 'flex flex-col items-center justify-center h-8 relative cursor-pointer rounded-lg hover:bg-gray-200/60 transition';
+                cell.className = 'flex flex-col items-center justify-center h-8 relative cursor-pointer rounded-lg hover:bg-gray-200/60 dark:hover:bg-gray-700/60 transition';
 
-                let badgeStyle = 'text-xs font-semibold text-gray-700';
+                let badgeStyle = 'text-xs font-semibold text-gray-700 dark:text-gray-300';
                 if (isSelected) {
                     badgeStyle = 'bg-brand-500 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-sm';
                 } else if (isToday) {
-                    badgeStyle = 'bg-orange-500 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-sm ring-2 ring-orange-200';
+                    badgeStyle = 'bg-orange-500 text-white font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-sm ring-2 ring-orange-200 dark:ring-orange-900';
                 }
 
                 cell.onclick = () => {
@@ -972,8 +1012,8 @@
 
                 cardEl.innerHTML = `
                     <div class="flex flex-col items-center justify-center pt-2 min-w-[36px] text-center">
-                        <span class="text-xl font-black text-gray-500 group-hover:text-brand-600 transition">${dayNum}</span>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${shortDay}</span>
+                        <span class="text-xl font-black text-gray-500 dark:text-gray-400 group-hover:text-brand-600 dark:group-hover:text-emerald-400 transition">${dayNum}</span>
+                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">${shortDay}</span>
                     </div>
 
                     <div class="flex-1 ${palette.bg} ${palette.text} rounded-2xl p-4 card-shadow relative overflow-hidden transition-all duration-200">
@@ -1117,82 +1157,41 @@
             for (let i = 1; i <= maxPeriods; i++) {
                 const item = appState.periodTimes[i] || { start: '', end: '' };
                 const row = document.createElement('div');
-                row.className = 'flex items-center justify-between bg-gray-50 p-2 rounded-xl text-xs border border-gray-100';
+                row.className = 'flex items-center justify-between bg-gray-50 dark:bg-gray-900 p-2 rounded-xl text-xs border border-gray-100 dark:border-gray-700';
                 row.innerHTML = `
-                    <span class="font-bold text-gray-700 w-16">Tiết ${i}:</span>
+                    <span class="font-bold text-gray-700 dark:text-gray-300 w-16">Tiết ${i}:</span>
                     <div class="flex items-center space-x-1.5">
-                        <input type="time" data-period="${i}" data-type="start" value="${item.start}" class="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <input type="time" data-period="${i}" data-type="start" value="${item.start}" class="border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100">
                         <span class="text-gray-400">-</span>
-                        <input type="time" data-period="${i}" data-type="end" value="${item.end}" class="border border-gray-200 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <input type="time" data-period="${i}" data-type="end" value="${item.end}" class="border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100">
                     </div>
                 `;
                 listContainer.appendChild(row);
             }
         }
 
-        function exportToICal() {
-            if (!appState.allLessons || appState.allLessons.length === 0) {
-                showToast('Không có lịch học nào để xuất!', 'error');
-                return;
-            }
-
-            let icsLines = [
-                'BEGIN:VCALENDAR',
-                'VERSION:2.0',
-                'PRODID:-//LichHocThongMinh//VN',
-                'CALSCALE:GREGORIAN',
-                'METHOD:PUBLISH'
-            ];
-
-            appState.allLessons.forEach((lesson) => {
-                if (!lesson.dateObj || lesson.periodsArr.length === 0) return;
-
-                const firstPeriod = lesson.periodsArr[0];
-                const lastPeriod = lesson.periodsArr[lesson.periodsArr.length - 1];
-
-                const startTimeStr = appState.periodTimes[firstPeriod]?.start || '06:45';
-                const endTimeStr = appState.periodTimes[lastPeriod]?.end || '11:25';
-
-                const [sHours, sMins] = startTimeStr.split(':').map(Number);
-                const [eHours, eMins] = endTimeStr.split(':').map(Number);
-
-                const dtStart = new Date(lesson.dateObj);
-                dtStart.setHours(sHours, sMins, 0);
-
-                const dtEnd = new Date(lesson.dateObj);
-                dtEnd.setHours(eHours, eMins, 0);
-
-                const formatDateForICS = (dt) => {
-                    return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-                };
-
-                icsLines.push('BEGIN:VEVENT');
-                icsLines.push(`SUMMARY:${lesson.courseName}`);
-                icsLines.push(`DESCRIPTION:Lớp: ${lesson.courseFull}\\nTiết: ${lesson.periodsStr}\\nGV: ${lesson.teacher || 'Chưa cập nhật'}`);
-                icsLines.push(`LOCATION:${lesson.room || 'Trường'}`);
-                icsLines.push(`DTSTART:${formatDateForICS(dtStart)}`);
-                icsLines.push(`DTEND:${formatDateForICS(dtEnd)}`);
-                icsLines.push('END:VEVENT');
-            });
-
-            icsLines.push('END:VCALENDAR');
-
-            const icsData = icsLines.join('\r\n');
-            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', 'Lich_Hoc_Ca_Nhan.ics');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('Đã tải xuống file .ics thành công!', 'success');
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
+            // Áp dụng Theme đã lưu từ localStorage khi vừa khởi chạy
+            applyTheme(currentThemeMode);
+
             const importModal = document.getElementById('importModal');
             const settingsModal = document.getElementById('settingsModal');
             const donateModal = document.getElementById('donateModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
+
+            // Xử lý chuyển đổi qua lại giữa 3 chế độ Theme: Auto -> Light -> Dark -> Auto
+            document.getElementById('themeToggleBtn').onclick = () => {
+                if (currentThemeMode === 'auto') {
+                    applyTheme('light');
+                    showToast('Đã chuyển sang giao diện Sáng', 'info');
+                } else if (currentThemeMode === 'light') {
+                    applyTheme('dark');
+                    showToast('Đã chuyển sang giao diện Tối', 'info');
+                } else {
+                    applyTheme('auto');
+                    showToast('Đã chuyển sang chế độ Tự động (Hệ thống)', 'info');
+                }
+            };
 
             // Toggle Month Calendar Click
             document.getElementById('toggleMonthBtn').onclick = () => toggleMonthCalendar();
@@ -1348,9 +1347,6 @@
                 updateView();
                 showToast('Cấu hình giờ tiết học đã được lưu thành công!', 'success');
             };
-
-            // Export iCal
-            document.getElementById('exportIcalBtn').onclick = exportToICal;
 
             // Load initial state from browser storage or default sample
             const initialHtml = loadFromStorage();
