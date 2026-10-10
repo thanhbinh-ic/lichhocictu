@@ -85,6 +85,9 @@
                 <button id="openSettingsBtn" title="Cấu hình tiết học" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
                     <i class="fa-solid fa-sliders text-lg"></i>
                 </button>
+                <button id="openDonateBtn" title="Ủng hộ tác giả" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-rose-200 hover:text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
+                    <i class="fa-solid fa-heart text-lg text-rose-300"></i>
+                </button>
                 <button id="exportIcalBtn" title="Xuất lịch ra Google/Apple Calendar (.ics)" class="p-2 hover:bg-white/10 active:bg-white/20 rounded-xl transition text-white min-w-[40px] min-h-[40px] flex items-center justify-center">
                     <i class="fa-solid fa-file-export text-lg"></i>
                 </button>
@@ -258,6 +261,55 @@
                 </button>
                 <button id="saveSettingsBtn" class="px-5 py-2 text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm">
                     Lưu cấu hình
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donate Modal -->
+    <div id="donateModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto relative border border-emerald-100">
+            <button id="closeDonateModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 min-w-[36px] min-h-[36px] flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="bg-emerald-50 text-brand-500 p-4 rounded-full mb-3 flex items-center justify-center w-16 h-16">
+                    <i class="fa-solid fa-heart text-3xl text-rose-500"></i>
+                </div>
+                
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Ủng Hộ Tác Giả</h3>
+                <p class="text-gray-500 mb-5 text-xs max-w-xs leading-relaxed">
+                    Sự đóng góp của bạn giúp mình duy trì và tiếp tục phát triển ứng dụng <span class="font-bold text-brand-600">Lịch Học Thông Minh</span>!
+                </p>
+                
+                <div class="bg-white p-3 rounded-2xl mb-5 border border-gray-100 shadow-md transform transition-transform hover:scale-105">
+                    <img src="https://img.vietqr.io/image/bidv-8847804617-compact2.jpg?accountName=NONG%20THANH%20BINH" alt="Mã QR ủng hộ" class="w-48 h-48 object-contain rounded-xl">
+                    <p class="text-[10px] text-brand-600 mt-2 font-bold uppercase tracking-wide">Quét mã để chuyển khoản nhanh</p>
+                </div>
+                
+                <div class="w-full space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200/80 text-left">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ngân hàng</label>
+                        <p class="text-gray-800 text-sm font-bold">BIDV</p>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Số tài khoản</label>
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200 mt-0.5 shadow-sm">
+                            <p id="bankAccountNumber" class="text-brand-600 text-base font-mono font-bold tracking-wider ml-1">8847804617</p>
+                            <button id="copyAccountBtn" class="p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-brand-600 flex items-center justify-center" title="Sao chép số tài khoản">
+                                <i class="fa-regular fa-copy text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Chủ tài khoản</label>
+                        <p class="text-gray-800 font-bold uppercase text-xs">NONG THANH BINH</p>
+                    </div>
+                </div>
+                
+                <button id="confirmCloseDonateBtn" class="mt-5 w-full bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold py-2.5 rounded-xl transition-all text-xs shadow-md">
+                    Cảm ơn bạn! (Đóng)
                 </button>
             </div>
         </div>
@@ -1111,6 +1163,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             const importModal = document.getElementById('importModal');
             const settingsModal = document.getElementById('settingsModal');
+            const donateModal = document.getElementById('donateModal');
             const htmlInputArea = document.getElementById('htmlInputArea');
 
             // Toggle Month Calendar Click
@@ -1202,6 +1255,21 @@
             };
 
             document.getElementById('closeSettingsModal').onclick = () => settingsModal.classList.add('hidden');
+
+            // Donate Modal Handlers
+            document.getElementById('openDonateBtn').onclick = () => donateModal.classList.remove('hidden');
+            document.getElementById('closeDonateModal').onclick = () => donateModal.classList.add('hidden');
+            document.getElementById('confirmCloseDonateBtn').onclick = () => donateModal.classList.add('hidden');
+
+            // Copy Bank Account Number
+            document.getElementById('copyAccountBtn').onclick = () => {
+                const accNo = document.getElementById('bankAccountNumber').textContent.trim();
+                navigator.clipboard.writeText(accNo).then(() => {
+                    showToast('Đã sao chép số tài khoản!', 'success');
+                }).catch(() => {
+                    showToast('Khay nhớ tạm bị chặn, số TK: ' + accNo, 'info');
+                });
+            };
 
             document.getElementById('resetPeriodsBtn').onclick = () => {
                 appState.periodTimes = JSON.parse(JSON.stringify(DEFAULT_PERIOD_TIMES));
